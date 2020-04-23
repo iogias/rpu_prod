@@ -28,15 +28,12 @@ if (isset($_POST['token']) && $_POST['token']=='login'){
     echo '{"status":true}';
 }  else if(isset($_POST['token']) && $_POST['token']=='staff'){
     $param = $_POST['args'];
-    //$rows = RpuUser::get_user_staff($param);
     $rows = RpuUser::get_all_staff_join($param);
     foreach($rows as $user){
         $sub=array();
-        //$iduser = ($user['id_user']=='')?'0':$user['id_user'];
-        //$idstaff = $user['id_staff'];
-        //$akses = ($user['username']==NULL)?'<span class="badge badge-danger">'.'No'.'</span>':'<span class="badge badge-primary">'.'Yes'.'</span>';
         $akses = ($user['akses']==1)?'<span class="badge badge-primary">'.'Yes'.'</span>':'<span class="badge badge-danger">'.'No'.'</span>';
-        $status = ($user['status']==1)?'<span class="badge badge-success">'.'Aktif'.'</span>':'<span class="badge badge-secondary">'.'Non-Aktif'.'</span>';
+        $status = ($user['status']==1)?'<span class="badge badge-success">'.'Aktif'.'</span>':'<span class="badge badge-secondary">'.'Non'.'</span>';
+        $u_status = ($user['u_status']==1)?'<span class="badge badge-success">'.'Aktif'.'</span>':'<span class="badge badge-secondary">'.'Non'.'</span>';
         $disable = ($user['akses']==1)?'disabled':'enabled';
         $disable2 = ($user['akses']==0)?'disabled':'enabled';
         $sub[] = $user["nama"];
@@ -45,18 +42,39 @@ if (isset($_POST['token']) && $_POST['token']=='login'){
         $sub[] = $user["hp"];
         $sub[] = $user["group_staff"];
         $sub[] = '<div class="text-center">'.$akses.'</div>';
+        $sub[] = '<div class="text-center">'.$u_status.'</div>';
         $sub[] = '<div class="text-center">'.$status.'</div>';
         $sub[]='<div class="text-center">
-                <button title="Tambah akses" type="button" class="btn btn-primary btn-sm tambah-akses-staff" id="tambah-'.$user['id'].'" '.$disable.'>
+                <button title="Tambah akses" type="button" data-status-user="'.$user['status'].'" class="btn btn-primary btn-sm tambah-akses-staff" id="tambah-'.$user['id'].'" '.$disable.'>
                 <i class="fas fa-user-plus"></i></button>
-                <button title="Edit akses" type="button" class="btn btn-danger btn-sm edit-user" id="uedit-'.$user['id'].'" '.$disable2.'>
+                <button title="Edit akses" type="button" class="btn btn-danger btn-sm edit-user" id="uedit-'.$user['id_user'].'" '.$disable2.'>
                 <i class="fas fa-user-edit"></i></button>
                 <button title="Edit staff" type="button" class="btn btn-warning btn-sm edit-staff" id="edit-'.$user['id'].'">
-                <i class="fas fa-pencil-alt"></i></button></div>';
+                <i class="fas fa-pencil-alt"></i></button>
+                </div>';
         $data[]=$sub;
     }
     $res = array("data"=>$data);
     echo json_encode($res);
+} else if(isset($_POST['token']) && $_POST['token']=='cek_username'){
+    $data = $_POST['data'];
+    $sql = "SELECT username FROM tb_user WHERE username='".$data."'";
+    $param = array('username' => $data);
+    $username = DBHandler::getOne($sql,$param);
+    if($username){
+        echo '{"status":false}';
+    }
+}  else if(isset($_POST['token']) && $_POST['token']=='cek_pwd'){
+    $pass = $_POST['pwd'];
+    $id = $_POST['id'];
+    $sql = "SELECT password FROM tb_user WHERE id='".$id."'";
+    $param = array('id' => $id);
+    $pwd = DBHandler::getOne($sql,$param);
+    if(password_verify($pass, $pwd)){
+        return $pwd;
+    } else {
+        echo '{"status":false}';
+    }
 } else {
     exit;
 }

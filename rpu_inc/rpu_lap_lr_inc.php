@@ -107,7 +107,7 @@ if (!defined('WEB_ROOT')) {
             <h5>Biaya Variabel</h5>
             <table class="table table-sm table-striped">
                 <tr>
-                    <td>Biaya Bahan Baku Produksi (BV)</td>
+                    <td>Total Biaya Variabel</td>
                     <td>&nbsp;</td>
                     <td id="total-biaya-bv" class="text-right">
                     </td>

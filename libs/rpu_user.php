@@ -58,24 +58,27 @@ class RpuUser {
         return DbHandler::getAll($sql);
     }
 
-    public static function get_all_staff_join(){
-        $sql = "SELECT s.*,g.nama as group_staff FROM tb_staff s JOIN tb_staff_group g ON g.id=s.id_staff_group";
-        return DbHandler::getAll($sql);
+    public static function get_all_staff_join($arg='99'){
+        $sql = "SELECT s.*,u.id AS id_user,g.nama as group_staff,u.status AS u_status
+                FROM tb_staff s
+                JOIN tb_staff_group g ON g.id=s.id_staff_group
+                LEFT JOIN tb_user u ON u.id_staff=s.id\n";
+        if($arg!='99'){
+            $sql .= "WHERE s.status='".$arg."'";
+        }
+        $param = array('status'=>$arg);
+        return DbHandler::getAll($sql,$param);
     }
 
-    public static function get_user_staff($arg='99'){
-        // $sql = "SELECT u.id AS id_user,s.id AS id_staff,u.id_group_user,s.id_staff_group,s.status,
-        //         s.nama,s.hp,u.username,gs.nama AS group_staff,gu.nama AS group_user
-        //         FROM tb_user u
-        //         RIGHT JOIN tb_staff s ON s.id=u.id_staff
-        //         LEFT JOIN tb_user_group gu ON gu.id=u.id_group_user
-        //         LEFT JOIN tb_staff_group gs ON gs.id=s.id_staff_group\n";
-        // if($arg!='99'){
-        //     $sql .= "WHERE s.status='".$arg."'\n";
-        // }
-        // $sql .="ORDER BY s.nama ASC";
-        // $param = array('status'=>$arg);
-        // return DbHandler::getAll($sql,$param);
+    public static function update_status_akses_staff($id){
+        $sql = "UPDATE tb_staff SET
+                akses=1
+                WHERE id='".$id."'";
+        $params = array(
+                    'id'=>$id
+                );
+        return DbHandler::cExecute($sql, $params);
+
     }
 
     public static function get_staff_byId($id){
@@ -85,15 +88,13 @@ class RpuUser {
         return DbHandler::getRow($sql,$param);
     }
 
-    public static function get_user_byId($id,$ids){
-        $sql = "SELECT u.id AS id_user,u.username,u.id_group_user,u.id_staff,u.status AS status_user,
-                s.nama,s.belakang,s.alamat,s.hp,s.id_staff_group,s.status AS status_staff
+    public static function get_user_byId($id){
+        $sql = "SELECT u.*,g.nama AS group_user,s.nama AS nama_staff
                 FROM tb_user u
-                RIGHT JOIN tb_staff s ON s.id=u.id_staff
-                LEFT JOIN tb_user_group gu ON gu.id=u.id_group_user
-                LEFT JOIN tb_staff_group gs ON gs.id=s.id_staff_group
-                WHERE u.id='".$id."' AND u.id_staff='".$ids."' GROUP BY u.id";
-        $params = array('id'=>$id,'id_staff'=>$ids);
+                JOIN tb_user_group g ON g.id=u.id_group_user
+                JOIN tb_staff s ON s.id=u.id_staff
+                WHERE u.id='".$id."'";
+        $params = array('id'=>$id);
         return DbHandler::getRow($sql,$params);
     }
 
@@ -124,7 +125,7 @@ class RpuUser {
        return $pass;
     }
 
-    public static function new_user($data,$id) {
+    public static function new_user($data) {
         $uname = strtolower(trim($data['user-name']));
         $pwd = self::pwd_hash(trim($data['password-user']));
         $sql = "INSERT INTO tb_user(id,username,password,id_group_user,id_staff,status)
@@ -132,13 +133,13 @@ class RpuUser {
             '".$uname."',
             '".$pwd."',
             '".$data['group-user']."',
-            '".$id."',
+            '".$data['id-user']."',
             '".$data['status-user']."')";
         $params = array(
                     'username'=>$uname,
                     'password'=>$pwd,
                     'id_group_user'=>$data['group-user'],
-                    'id_staff'=>$id,
+                    'id_staff'=>$data['id-user'],
                     'status'=>$data['status-user']
                 );
         return DbHandler::cExecute($sql, $params);
@@ -167,19 +168,17 @@ class RpuUser {
         return DbHandler::cExecute($sql, $params);
     }
 
-    public static function update_user($data,$id) {
-        $pwd = self::pwd_hash(trim($data['password-user']));
+    public static function update_user($data) {
+        $pwd = self::pwd_hash(trim($data['password-user-baru']));
         $sql = "UPDATE tb_user SET
                 password='".$pwd."',
                 id_group_user='".$data['group-user']."',
-                id_staff='".$data['group-staff']."',
-                status='".$data['status-user']."' WHERE id='".$id."'";
+                status='".$data['status-user']."' WHERE id='".$data['id-user']."'";
         $params = array(
                     'password'=>$pwd,
                     'id_group_user'=>$data['group-user'],
-                    'id_staff'=>$data['group-staff'],
                     'status'=>$data['status-user'],
-                    'id'=>$id
+                    'id'=>$data['id-user']
                 );
         return DbHandler::cExecute($sql, $params);
     }

@@ -109,7 +109,6 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
     $produk=RpuKatalog::getAllProdukJoin($param);
     $data=array();
     for ($i = 0; $i < count($produk); $i++) {
-        //$total_items = $produk[$i]["stok_ready"]+$produk[$i]["terjual"]+$produk[$i]["lainnya"];
         $qty_beli=RpuKatalog::qty_produk_beli($produk[$i]["kode_produk"]);
         $qty_jual=RpuKatalog::qty_produk_jual($produk[$i]["kode_produk"]);
         $qty_ready=$qty_beli-$qty_jual-$produk[$i]["lainnya"];
@@ -124,8 +123,6 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
         $sub[]='<div class="text-right pr-3">'.money_simple($produk[$i]["harga_beli"]).'</div>';
         $sub[]='<div class="text-right pr-3">'.$hpp.'</div>';
         $sub[]='<div class="text-right pr-3">'.$harga_jual.'</div>';
-        // $sub[]='<div class="text-center">'.$produk[$i]["stok_ready"].'</div>';
-        // $sub[]='<div class="text-center text-primary">'.$produk[$i]["terjual"].'</div>';
         $sub[]='<div class="text-center">'.money_simple($qty_ready).'</div>';
         $sub[]='<div class="text-center text-info">'.money_simple($qty_jual).'</div>';
         $sub[]='<div class="text-center text-danger">'.$produk[$i]["lainnya"].'</div>';
@@ -197,6 +194,3 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
 else {
     die('NO DATA PASSED');
 }
-
-
-

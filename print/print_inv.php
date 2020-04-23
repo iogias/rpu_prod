@@ -98,7 +98,7 @@ $set = RpuKatalog::get_settings();
           NPWP : <?php echo $set['npwp'];?>
         </address>
         </div>
-        <div class="col-sm-3 invoice-col">
+        <div class="col-sm-3 invoice-col ml-3">
             Keterangan
             <address>
             <?php echo trim($jual['keterangan']);?>

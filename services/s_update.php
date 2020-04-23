@@ -131,10 +131,19 @@ if (isset($_POST['token']) && $_POST['token']=='kategoriproduk'){
     parse_str($dt,$data);
     RpuUser::update_staff($data);
     echo '{"status":true}';
+} else if (isset($_POST['token']) && $_POST['token']=='user'){
+    $iduser = $_POST['data'];
+    $user = RpuUser::get_user_byId($iduser);
+    echo '{"status":true,"user":'.json_encode($user).'}';
 } else if (isset($_POST['token']) && $_POST['token']=='jb'){
     $idjb = $_POST['data'];
     $jb = RpuKatalog::get_jb_byId($idjb);
     echo '{"status":true,"jb":'.json_encode($jb).'}';
+} else if(isset($_POST['token']) && $_POST['token']=='update_user'){
+    $dt = $_POST['data'];
+    parse_str($dt,$data);
+    RpuUser::update_user($data);
+    echo '{"status":true}';
 } else if (isset($_POST['token']) && $_POST['token']=='update_jb'){
     $dt = $_POST['data'];
     parse_str($dt,$data);

@@ -7,15 +7,28 @@ $session_us = $_SESSION['username'];
 $session_id = $_SESSION['id'];
 // $user = RpuUser::get_user($session_id);
 // print_r($user);
+
 }
 ?>
 <section class="content">
 <div class="container-fluid">
-<div class="row">
-  <div class="col-sm-12">
-    <div class="card">
-    <div class="card-body">
-    <div class="table-responsive">
+<div class="card">
+  <div class="card-header">
+    <div class="card-tools">
+      <div class="input-group">
+        <div class="input-group-prepend">
+          <span class="input-group-text">Status Staff</span>
+        </div>
+        <select name="filter-status" id="filter-status-staff" class="form-control">
+          <option value="99">SEMUA</option>
+          <option value="1">AKTIF</option>
+          <option value="0">NON-AKTIF</option>
+        </select>
+      </div>
+    </div>
+  </div>
+<div class="card-body">
+<div class="table-responsive">
     <table id="tb-staff" class="table table-sm table-striped">
       <thead align="center">
         <tr>
@@ -25,13 +38,12 @@ $session_id = $_SESSION['id'];
           <th>HP</th>
           <th>Bagian</th>
           <th>Akses</th>
-          <th>Status</th>
-          <th width="10%">&nbsp;</th>
+          <th>Status Akses</th>
+          <th>Status Staff</th>
+          <th width="12%"></th>
         </tr>
       </thead>
     </table>
-    </div>
-</div>
 </div>
 </div>
 </div>
@@ -90,17 +102,6 @@ $session_id = $_SESSION['id'];
                 <option value="0">Non-Aktif</option>
             </select>
         </div>
-<!--         <div class="form-group clearfix">
-          <label for="akses-ya" class="col-form-label d-inline">Akses</label>
-          <div class="icheck-primary d-inline ml-2">
-            <input type="radio" name="akses" checked id="akses-tidak" class="form-control form-user-staff">
-            <label for="akses-tidak">Tidak</label>
-          </div>
-          <div class="icheck-primary d-inline ml-2">
-            <input type="radio" name="akses" id="akses-ya" class="form-control form-user-staff">
-            <label for="akses-ya">Ya</label>
-          </div>
-        </div> -->
       </div>
     </div>
   </div>
@@ -127,19 +128,19 @@ $session_id = $_SESSION['id'];
           <div class="col-sm-6">
             <div class="form-group">
             <label for="user-name" class="col-form-label">Username</label>
-            <input type="text" class="form-control form-user" id="user-name" name="user-name" minlength="2" maxlength="10">
+            <input placeholder="Huruf & Angka saja tanpa spasi" type="text" class="form-control form-user" id="user-name" name="user-name" minlength="2" maxlength="10">
             </div>
             <div class="form-group">
-            <label for="password-user-lama" class="col-form-label d-none">Password Lama</label>
-            <input type="password" class="form-control form-user d-none" id="password-user-lama" name="password-user-lama" maxlength="30">
+            <label for="password-user" class="col-form-label">Password <span id="lbl-lama"></span></label>
+            <input placeholder="Tanpa spasi" type="password" class="form-control form-user" id="password-user" name="password-user">
             </div>
             <div class="form-group">
-            <label for="password-user" class="col-form-label" id="password-user">Password</label>
-            <input type="password" class="form-control form-user" id="password-user" name="password-user" maxlength="30">
+            <label for="password-user-baru" class="col-form-label d-none password-baru">Password Baru</label>
+            <input placeholder="Tanpa spasi" type="password" class="form-control form-user d-none password-baru" id="password-user-baru" name="password-user-baru" maxlength="30">
             </div>
             <div class="form-group">
             <label for="password-user-re" class="col-form-label">Ulangi Password</label>
-            <input type="password" class="form-control form-user" id="password-user-re" name="password-user-re" maxlength="30">
+            <input placeholder="Tanpa spasi" type="password" class="form-control form-user" id="password-user-re" name="password-user-re">
             </div>
           </div>
           <div class="col-sm-6">
@@ -187,6 +188,269 @@ $(function(){
     disable_frm_users(p_user,'.form-'+p_user)
     fetch_staff()
 
+    $('#filter-status-staff').change(function(e){
+      let sts = $(this).val()
+      $('#tb-'+p_staff).DataTable().destroy()
+      fetch_staff(sts)
+    })
+
+    $('#btn-tambah-staff').click(function(e){
+      e.preventDefault()
+      enable_frm_users(p_staff,'.form-'+p_staff)
+      enable_btn($('#btn-staff-simpan'))
+    })
+
+    $('#btn-batal-staff').click(function(e){
+      e.preventDefault()
+      $('#f-'+p_staff)[0].reset()
+      disable_frm_users(p_staff,'.form-'+p_staff)
+      disable_btn($('.btn-staff-form'))
+      enable_btn($('#btn-tambah-staff'))
+    })
+
+    $('#btn-batal-user').click(function(e){
+      e.preventDefault()
+      $('#f-'+p_user)[0].reset()
+      disable_frm_users(p_user,'.form-'+p_user)
+      disable_btn($('.btn-user-form'))
+    })
+
+    $('#user-name').blur(function(){
+      let ubaru = $(this).val()
+      ubaru = ubaru.toLowerCase()
+      ubaru = validAlphaNum(ubaru)
+      if(ubaru){
+      $.post(service_url+'s_login.php',{
+              token:'cek_username',
+              data:ubaru
+            },function(data){
+                if (data.status==false){
+                  toastr.error('USERNAME sudah digunakan!, mohon diganti')
+                }
+            },'json')
+      } else {
+          toastr.error('Username hanya huruf & angka (tanpa spasi)')
+      }
+    })
+
+    $('#password-user').blur(function(){
+      let id_user = $('#id-user').val()
+      let pwd_lama = $(this).val()
+      $.post(service_url+'s_login.php',{
+              token:'cek_pwd',
+              id:id_user,
+              pwd:pwd_lama
+            },function(data){
+                if (data.status==false){
+                  toastr.error('PASSWORD LAMA SALAH!')
+                }
+            },'json')
+    })
+
+    $('.btn-user-form').click(function(e){
+      e.preventDefault()
+      let id=$(this).attr('id')
+      let idx = id.replace('btn-user'+'-','')
+      let form = $('#f-'+p_user)
+      let fail = false
+      let fail_log = ''
+      let name
+      form.find('input').each(function(){
+         if(!$(this).prop('required')){
+         }else{
+            if(!$(this).val()){
+              fail=true
+              name=$(this).attr('name')
+              fail_log += '['+ name +'] HARUS DI ISI!'+'</br>'
+            }
+         }
+      })
+      if (!fail) {
+          if (idx=='simpan'){
+            $.post(service_url+'s_tambah.php',{
+              token:'new_'+p_user,
+              data:form.serialize()
+            },function(data){
+                if (data.status==true){
+                  toastr.success('SUKSES INPUT DATA! : ['+data.nama+']')
+                  $('#f-'+p_user)[0].reset()
+                  window.setTimeout(function(){
+                    window.location.href = 'index.php?action=rpu_user'
+                  },1500)
+                 } else{
+                  toastr.error('ERROR INPUT DATA!')
+                 }
+            },'json')
+          } else if(idx=='update'){
+            $.post(service_url+'s_update.php',{
+              token:'update_'+p_user,
+              data:form.serialize()
+            },function(data){
+                if (data.status==true){
+                    toastr.success('SUKSES UPDATE DATA!')
+                    $('#f-'+p_user)[0].reset()
+                    window.setTimeout(function(){
+                      window.location.href = 'index.php?action=rpu_user'
+                    },1500)
+                 } else{
+                  toastr.error('ERROR INPUT DATA!')
+                 }
+            },'json')
+          }
+        } else {
+            toastr.warning(fail_log)
+        }
+    })
+
+    $('.btn-staff-form').click(function(e){
+      e.preventDefault()
+      let id=$(this).attr('id')
+      let idx = id.replace('btn-staff'+'-','')
+      let form = $('#f-'+p_staff)
+      let fail = false
+      let fail_log = ''
+      let name
+      form.find('input').each(function(){
+         if(!$(this).prop('required')){
+         }else{
+            if(!$(this).val()){
+              fail=true
+              name=$(this).attr('name')
+              fail_log += '['+ name +'] HARUS DI ISI!'+'</br>'
+            }
+         }
+      })
+      if (!fail) {
+          if (idx=='simpan'){
+            $.post(service_url+'s_tambah.php',{
+              token:'new_'+p_staff,
+              data:form.serialize()
+            },function(data){
+                if (data.status==true){
+                  toastr.success('SUKSES INPUT DATA! : ['+data.nama+']')
+                  $('#f-'+p_staff)[0].reset()
+                  window.setTimeout(function(){
+                    window.location.href = 'index.php?action=rpu_user'
+                  },1500)
+                 } else{
+                  toastr.error('ERROR INPUT DATA!')
+                 }
+            },'json')
+          } else if(idx=='update'){
+            $.post(service_url+'s_update.php',{
+              token:'update_'+p_staff,
+              data:form.serialize()
+            },function(data){
+                if (data.status==true){
+                    toastr.success('SUKSES UPDATE DATA!')
+                    $('#f-'+p_staff)[0].reset()
+                    window.setTimeout(function(){
+                      window.location.href = 'index.php?action=rpu_user'
+                    },1500)
+                 } else{
+                  toastr.error('ERROR INPUT DATA!')
+                 }
+            },'json')
+          }
+        } else {
+            toastr.warning(fail_log)
+        }
+    })
+
+  $(document).on('click','.tambah-akses-'+p_staff,function(e){
+    e.preventDefault()
+    let idx = $(this).attr('id').split('-')
+    let id_status = parseInt($(this).attr('data-status-user'))
+    let ids = parseInt(idx[1])
+    if (id_status==0){
+      toastr.error('Status staff Non-Aktif, harap diaktifkan dahulu')
+    } else {
+      enable_frm_users(p_user,'.form-'+p_user)
+      enable_btn($('#btn-user-simpan'))
+      $.post(service_url+'s_tambah.php',{
+              token:'akses_'+p_staff,
+              data:ids
+              },function(data){
+                if(data.status==true){
+                  $('#id-user').val(data.staff_id)
+                  $('#staff-user').val(data.staff_nama)
+                  $('#user-name').focus()
+                }
+      },'json')
+    }
+  })
+
+  $(document).on('click','.edit-'+p_staff,function(e){
+      e.preventDefault()
+      let idx = $(this).attr('id').split('-')
+      let id_staff = parseInt(idx[1])
+      $.post(service_url+'s_update.php',{
+          token:p_staff,
+          data:id_staff,
+      },function(data){
+          if(data.status==true){
+            enable_frm_users(p_staff,'.form-'+p_staff)
+            disable_btn($('#btn-tambah-staff'))
+            enable_btn($('#btn-staff-update'))
+            $('#id-staff').val(data.staff.id)
+            $('#nama-depan').val(data.staff.nama)
+            $('#nama-belakang').val(data.staff.belakang)
+            $('#alamat-staff').val(data.staff.alamat)
+            $('#hp-staff').val(data.staff.hp)
+            $('#group-staff').val(data.staff.id_staff_group)
+            $('#status-staff').val(data.staff.status)
+          }
+      },'json')
+  })
+
+  $(document).on('click','.edit-'+p_user,function(e){
+     e.preventDefault()
+      let idx = $(this).attr('id').split('-')
+      let id_user = parseInt(idx[1])
+      $.post(service_url+'s_update.php',{
+          token:p_user,
+          data:id_user,
+      },function(data){
+          if(data.status==true){
+            enable_frm_users(p_user,'.form-'+p_user)
+            disable_btn($('#btn-tambah-user'))
+            enable_btn($('#btn-user-update'))
+            $('#id-user').val(data.user.id)
+            $('#user-name').val(data.user.username)
+            $('#user-name').prop('readonly',true)
+            $('#staff-user').val(data.user.nama_staff)
+            $('#staff-user').prop('readonly',true)
+            $('#password-user').val('XXXXXXXXXX')
+            $('#lbl-lama').text('lama')
+            $('.password-baru').removeClass('d-none')
+            $('#password-user-re').val('')
+            $('#group-user').val(data.user.id_group_user)
+            $('#status-user').val(data.user.status)
+          }
+      },'json')
+  })
+
+  // $(document).on('click','.del-'+p_staff,function(e){
+  //   e.preventDefault()
+  //   let idx = $(this).attr('id').replace('del-','')
+  //   let ids = parseInt(idx)
+  //   let idu = $(this).attr('data-iduser')
+
+  //   if (confirm("Hapus data ini?")){
+  //       $.post(service_url+'s_delete.php',{
+  //           token:p_staff,
+  //           idstaff:ids,
+  //           iduser:idu
+  //       },function(data){
+  //           if(data.status==true){
+  //               toastr.success('SUKSES HAPUS DATA!')
+  //               $('#tb-'+p_staff).DataTable().destroy()
+  //               fetch_staff()
+  //           }
+  //       },'json')
+  //       }
+  // })
+
     function disable_frm_users(param,cls){
         $('#f-'+param).find(cls).each(function(){
             $(this).prop('disabled',true)
@@ -213,207 +477,5 @@ $(function(){
         })
     }
 
-    $('#btn-tambah-staff').click(function(e){
-      e.preventDefault()
-      enable_frm_users(p_staff,'.form-'+p_staff)
-      enable_btn($('#btn-staff-simpan'))
-    })
-
-    $('#btn-batal-staff').click(function(e){
-      e.preventDefault()
-      $('#f-'+p_staff)[0].reset()
-      disable_frm_users(p_staff,'.form-'+p_staff)
-      disable_btn($('.btn-staff-form'))
-      enable_btn($('#btn-tambah-staff'))
-    })
-
-    $('#btn-batal-user').click(function(e){
-      e.preventDefault()
-      $('#f-'+p_user)[0].reset()
-      disable_frm_users(p_user,'.form-'+p_user)
-      disable_btn($('.btn-user-form'))
-      //enable_btn($('#btn-tambah-staff'))
-    })
-
-    // $('input[name="akses"]').click(function(){
-    //   let ida=$(this).attr('id')
-    //   if(ida=='akses-ya'){
-    //     $(this).val('on')
-    //     // enable_form_user('.form-user')
-    //     // required_form_user('.form-user')
-    //   } else {
-    //     $(this).val('off')
-    //     // disable_form_user('.form-user')
-    //     // unrequired_form_user('.form-user')
-    //   }
-    // })
-
-    // $('#password-user-re').blur(function(){
-    //   let pwd = $('#password-user').val()
-    //   let thispwd = $(this).val()
-    //   if(thispwd!==pwd){
-    //     toastr.error('Password tidak cucok')
-    //   }
-    // })
-
-    $('.btn-staff-form').click(function(e){
-      e.preventDefault()
-      let id=$(this).attr('id')
-      let idx = id.replace('btn-staff'+'-','')
-      let form = $('#f-'+p_staff)
-      let fail = false
-      let fail_log = ''
-      let name
-      console.log(idx[1])
-      form.find('input').each(function(){
-         if(!$(this).prop('required')){
-         }else{
-            if(!$(this).val()){
-              fail=true
-              name=$(this).attr('name')
-              fail_log += '['+ name +'] HARUS DI ISI!'+'</br>'
-            }
-         }
-      })
-      if (!fail) {
-          if (idx=='simpan'){
-            $.post(service_url+'s_tambah.php',{
-              token:'new_'+p_staff,
-              data:form.serialize()
-            },function(data){
-                if (data.status==true){
-                  toastr.success('SUKSES INPUT DATA! : ['+data.nama+']')
-                  $('#f-'+p_staff)[0].reset()
-                  window.setTimeout(function(){
-                    window.location.href = 'index.php?action=rpu_user'
-                  },1500)
-                  // $('#tb-'+p_staff).DataTable().destroy()
-                  // fetch_staff()
-                  // disable_frm_users(p_staff,'.form-'+p_staff)
-                  // disable_btn($('.btn-staff-form'))
-                 } else{
-                  toastr.error('ERROR INPUT DATA!')
-                 }
-            },'json')
-          } else if(idx=='update'){
-            $.post(service_url+'s_update.php',{
-              token:'update_'+p_staff,
-              data:form.serialize()
-            },function(data){
-                if (data.status==true){
-                    toastr.success('SUKSES UPDATE DATA!')
-                    $('#f-'+p_staff)[0].reset()
-                    window.setTimeout(function(){
-                      window.location.href = 'index.php?action=rpu_user'
-                    },1500)
-
-                    // $('#tb-'+p_staff).DataTable().destroy()
-                    // fetch_staff()
-                    // disable_form_user('.form-user-staff')
-                    // disable_form_user('.form-user')
-                    // disable_btn($('.btn-user-form'))
-                 } else{
-                  toastr.error('ERROR INPUT DATA!')
-                 }
-            },'json')
-          }
-        } else {
-            toastr.warning(fail_log)
-        }
-    })
-
-  $(document).on('click','.tambah-akses-'+p_staff,function(e){
-    e.preventDefault()
-    let idx = $(this).attr('id').split('-')
-    let ids = parseInt(idx[1])
-    enable_frm_users(p_user,'.form-'+p_user)
-    enable_btn($('#btn-user-simpan'))
-    $.post(service_url+'s_tambah.php',{
-            token:'akses_'+p_staff,
-            data:ids
-            },function(data){
-              if(data.status==true){
-                $('#id-user').val(data.staff_id)
-                $('#staff-user').val(data.staff_nama)
-
-              }
-            },'json')
-  })
-
-  $(document).on('click','.edit-'+p_staff,function(e){
-      e.preventDefault()
-      let idx = $(this).attr('id').split('-')
-      let id_staff = parseInt(idx[1])
-      $.post(service_url+'s_update.php',{
-          token:p_staff,
-          data:id_staff,
-      },function(data){
-          if(data.status==true){
-            enable_frm_users(p_staff,'.form-'+p_staff)
-            disable_btn($('#btn-tambah-staff'))
-            enable_btn($('#btn-staff-update'))
-            $('#id-staff').val(data.staff.id)
-            $('#nama-depan').val(data.staff.nama)
-            $('#nama-belakang').val(data.staff.belakang)
-            $('#alamat-staff').val(data.staff.alamat)
-            $('#hp-staff').val(data.staff.hp)
-            $('#group-staff').val(data.staff.id_staff_group)
-            $('#status-staff').val(data.staff.status)
-
-              // $('#f-'+param).find('input,select').each(function(){
-              //     $('#id-staff').val(data.staff.id_staff)
-
-              //     $('#staff-cred').val(data.staff.id_staff)
-              //     if(data.staff.username==null){
-              //       $('#akses-ya').prop('checked',false)
-              //     } else {
-              //       $('#akses-ya').prop('checked',true)
-              //       $('#staff-cred').val(data.staff.id_staff)
-              //       $('#id-user').val(data.staff.id_user)
-              //       $('#user-name').val(data.staff.username)
-              //       $('#user-name').prop('readonly',true)
-              //       $('#password-user').val('data.staff.username')
-              //       $('#password-user').prop('readonly',true)
-              //       $('#password-user-re').val('data.staff.username')
-              //       $('#password-user-re').prop('readonly',true)
-              //       $('#group-user').val(data.staff.id_group_user)
-              //       $('#status-user').val(data.staff.status_user)
-              //     }
-              // })
-          }
-      },'json')
-  })
-
-  // $(document).on('click','.del-'+param,function(e){
-  //   e.preventDefault()
-  //   let idx = $(this).attr('id').replace('del-','')
-  //   let ids = parseInt(idx)
-  //   console.log(ids)
-  //   if (confirm("Hapus data ini?")){
-  //       $.post(service_url+'s_delete.php',{
-  //           token:param,
-  //           data:ids
-  //       },function(data){
-  //           if(data.status==true){
-  //               toastr.success('SUKSES HAPUS DATA!')
-  //               $('#tb-'+param).DataTable().destroy()
-  //               fetch_user()
-  //           }
-  //       },'json')
-  //       }
-  // })
-
-
-
-    // function required_form_user(cls){
-    //     let d_form = $('#f-user-staff').find(cls).each(function(){
-    //         $(this).prop('required',true)
-    //     })
-    // }
-    // function unrequired_form_user(cls){
-    //     let d_form = $('#f-user-staff').find(cls).each(function(){
-    //         $(this).prop('required',false)
-    //     })
-    // }
 })
 </script>

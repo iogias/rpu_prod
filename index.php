@@ -13,7 +13,7 @@ $modul = RpuKatalog::getAllModulInc();
 $tglnow = date('d-m-Y');
 $hari = hari_ini();
 ?>
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini text-sm">
 <div class="wrapper">
     <!-- Navbar -->
   <nav class="main-header navbar navbar-expand navbar-grey navbar-dark">

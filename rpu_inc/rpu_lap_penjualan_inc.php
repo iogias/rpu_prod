@@ -49,12 +49,10 @@ if (!defined('WEB_ROOT')) {
 <table id="tb-lap-penjualan" class="table table-sm text-sm p-2">
     <thead class="text-center">
         <tr>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
             <th width="9%">Tgl.Inv</th>
             <th>INVOICE</th>
             <th>Outlet</th>
-            <th width="7%">Status</th>
+            <th width="7%">Sts.Lunas</th>
             <th width="9%">J.Tempo</th>
             <th>Qty</th>
             <th>Total</th>
@@ -66,8 +64,6 @@ if (!defined('WEB_ROOT')) {
     <tbody></tbody>
     <tfoot>
         <tr>
-            <th>&nbsp;</th>
-            <th>&nbsp;</th>
             <th>&nbsp;</th>
             <th>&nbsp;</th>
             <th>&nbsp;</th>
@@ -296,8 +292,11 @@ $(function(){
                         arg:arg
                 }
             }).done(function(data){
-                var tb = $('#tb-lap-penjualan').DataTable({
-                    dom:'fBt<"bottom"l>p',
+                let tgawal = aw
+                let tgakhir = ak
+                let judul='Rekap Invoice periode '+tgawal+' s.d '+tgakhir
+                let tb = $('#tb-lap-penjualan').DataTable({
+                    dom:'<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>t<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"p>>',
                     aaData: data,
                     processing:true,
                     scrollCollapse: true,
@@ -317,8 +316,6 @@ $(function(){
                         "lengthMenu": " _MENU_ baris "
                     },
                     columns: [
-                        { "data": "tgl_awal","class":"d-none t-awal-inv","render":function(data,type,row){return formatDmy(data);},},
-                        { "data": "tgl_akhir","class":"d-none t-akhir-inv","render":function(data,type,row){return formatDmy(data);},},
                         { "data": "tanggal_pembuatan","class":"text-center","render":function(data,type,row){return formatDmy(data);},},
                         { "data": "nomor_inv","class":"text-center" },
                         { "data": "outlet" },
@@ -339,24 +336,51 @@ $(function(){
                     ],
                     buttons: [
                         {
+                            extend:'excelHtml5',
+                            className:'btn-success',
+                            text:'<i class="fa fa-file-excel"></i> EXCEL',
+                            footer:true,
+                            title:function(){
+                                return judul
+                            },
+                            exportOptions: {
+                                columns:[0,1,2,3,4,5,6,7,8],
+                                modifier: {
+                                    page: 'current',
+                                }
+                            },
+                        },
+                        {
+                            extend:'pdfHtml5',
+                            className:'btn-danger',
+                            text:'<i class="fa fa-file-pdf"></i> PDF',
+                            footer:true,
+                            title:function(){
+                                return judul
+                            },
+                            exportOptions: {
+                                columns:[0,1,2,3,4,5,6,7,8],
+                                modifier: {
+                                    page: 'current',
+                                }
+                            },
+                        },
+                        {
                             extend:'print',
                             footer:true,
                             autoPrint:true,
+                            text:'<i class="fa fa-print"></i> PRINT',
                             title:'',
                             exportOptions: {
-                                columns:[0,1,2,3,4,5,6,7,8,9,10],
+                                columns:[0,1,2,3,4,5,6,7,8],
                                 modifier: {
                                     page: 'current',
                                 }
                             },
                             customize: function(win) {
-                                var tawal = $(win.document.body).find('td.t-awal-inv')
-                                var taw = tawal[0].innerText
-                                var takhir = $(win.document.body).find('td.t-akhir-inv')
-                                var tah = takhir[0].innerText
                                 $(win.document.body)
                                     .css('font-size','10pt')
-                                    .prepend('<h5 class="text-center">Rekap Invoice</h5><p class="text-center">Periode: '+taw+' s.d '+tah+'</p>');
+                                    .prepend('<h5 class="text-center">Rekap Invoice</h5><p class="text-center">Periode: '+tgawal+' s.d '+tgakhir+'</p>');
                                 $(win.document.body).find('table')
                                     .addClass('compact')
                                     .css('font-size','inherit');
@@ -365,7 +389,7 @@ $(function(){
                     ],
                     footerCallback: function(row,data,start,end,display) {
                         var api = this.api(), data;
-                        var colNumber = [7,8,9];
+                        var colNumber = [5,6,7];
                         var intVal = function (i) {
                             return typeof i === 'string' ?
                                     i.replace(/[, ₹]|(\.\d{2})/g, "") * 1 :
@@ -389,5 +413,3 @@ $(function(){
 
 })
 </script>
-
-

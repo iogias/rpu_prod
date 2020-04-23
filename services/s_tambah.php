@@ -85,6 +85,16 @@ if (isset($_POST['token']) && $_POST['token']=='new_supplier'){
     if($nama){
        echo '{"status":true,"nama":"'.$nama.'"}';
     }
+} else if(isset($_POST['token']) && $_POST['token']=='new_user'){
+    $dt = $_POST['data'];
+    parse_str($dt,$data);
+    RpuUser::new_user($data);
+    $sql="SELECT username FROM tb_user ORDER BY id DESC LIMIT 1";
+    $nama = DbHandler::getOne($sql);
+    if($nama){
+        RpuUser::update_status_akses_staff($data['id-user']);
+        echo '{"status":true,"nama":"'.$nama.'"}';
+    }
 
 } else if(isset($_POST['token']) && $_POST['token']=='akses_staff'){
     $ids = $_POST['data'];

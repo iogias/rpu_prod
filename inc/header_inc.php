@@ -25,15 +25,16 @@ if (!defined('WEB_ROOT')) {
         <script src="<?php echo BASE_URI . 'themes/plugins/datatables/jquery.dataTables.min.js'; ?>"></script>
         <script src="<?php echo BASE_URI . 'themes/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js';?>"></script>
         <script src="<?php echo BASE_URI . 'themes/plugins/datatables-buttons/js/dataTables.buttons.min.js';?>"></script>
-        <script src="<?php echo BASE_URI . 'themes/plugins/datatables-buttons/js/buttons.bootstrap4.min.js';?>"></script>
+        <script src="<?php echo BASE_URI . 'themes/plugins/jszip/jszip.min.js';?>"></script>
         <script src="<?php echo BASE_URI . 'themes/plugins/datatables-buttons/js/buttons.html5.min.js';?>"></script>
         <script src="<?php echo BASE_URI . 'themes/plugins/datatables-buttons/js/buttons.print.min.js';?>"></script>
         <script src="<?php echo BASE_URI . 'themes/plugins/datatables-buttons/js/buttons.colVis.min.js';?>"></script>
+        <script src="<?php echo BASE_URI . 'themes/plugins/datatables-buttons/js/buttons.bootstrap4.min.js';?>"></script>
         <script src="<?php echo BASE_URI . 'themes/plugins/inputmask/min/jquery.inputmask.bundle.min.js';?>"></script>
+        <script src="<?php echo BASE_URI . 'themes/plugins/pdfmake/pdfmake.min.js';?>"></script>
+        <script src="<?php echo BASE_URI . 'themes/plugins/pdfmake/vfs_fonts.js';?>"></script>
         <script src="<?php echo BASE_URI . 'themes/plugins/toastr/toastr.min.js';?>"></script>
         <script src="<?php echo BASE_URI . 'js/adminlte.min.js'; ?>"></script>
         <script src="<?php echo BASE_URI . 'js/zebra_datepicker.min.js'; ?>"></script>
         <script src="<?php echo BASE_URI . 'js/rpu_init.js'; ?>"></script>
     </head>
-
-
