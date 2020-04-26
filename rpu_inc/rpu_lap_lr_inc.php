@@ -83,7 +83,7 @@ if (!defined('WEB_ROOT')) {
                     <td>&nbsp;</td>
                 </tr>
                 <tr>
-                <td>Biaya HPP</td>
+                <td>Biaya HPP (Total HPP dari items yg terjual)</td>
                 <td>&nbsp;</td>
                 <td id="total-hpp" class="text-right"></td>
                 </tr>
@@ -97,8 +97,8 @@ if (!defined('WEB_ROOT')) {
             <h5>Laba Rugi</h5>
             <table class="table table-sm table-striped">
                 <tr>
-                    <th>Total Laba / Rugi</th>
-                    <td class="text-sm">Total Pendapatan - Total Pengeluaran</td>
+                    <th>Total <span id="lbl-lr"></span></th>
+                    <td class="text-sm">(Total Pendapatan - Total Pengeluaran)</td>
                     <th id="total-lr" class="text-right"></th>
                 </tr>
             </table>
@@ -166,6 +166,7 @@ $(function(){
                 let total_lr
                 let biaya_list = ''
                 let biaya_bv_list=''
+                let lbl_lr = ''
                 for(var z=0;z<data.biaya.length;z++){
                     biaya_list +='<tr style="border:none;background-color:rgba(0,0,0,0);">'
                     biaya_list +='<td class="text-sm">'+data.biaya[z].kode_kategori+'</td>'
@@ -184,6 +185,7 @@ $(function(){
                 diskon_retur = parseInt(data.jual_kotor.total_rp)-parseInt(data.jual_bersih.total_rp)
                 total_pengeluaran = parseInt(data.total_biaya.total)+parseInt(data.jual_kotor.total_hpp)
                 total_lr = parseInt(data.jual_bersih.total_rp) - total_pengeluaran
+                lbl_lr = (total_lr<=0) ? 'Rugi' : 'Laba'
                 $('#tgl-periode-a').text(aw)
                 $('#tgl-periode-b').text(ah)
                 $('#total-biaya').text(formatCurrency(data.total_biaya.total))
@@ -194,6 +196,7 @@ $(function(){
                 $('#total-pendapatan-bersih').text(formatCurrency(data.jual_bersih.total_rp))
                 $('#total-pendapatan').text(formatCurrency(data.jual_bersih.total_rp))
                 $('#total-pengeluaran').text(formatCurrency(total_pengeluaran))
+                $('#lbl-lr').text(lbl_lr)
                 $('#total-lr').text(formatCurrency(total_lr))
             }
         )

@@ -2,13 +2,14 @@
 if (!defined('WEB_ROOT')) {
     exit;
 }
+$app = RpuKatalog::get_aplikasi();
 ?>
 <!DOCTYPE html>
     <head>
         <?php if (isset($pageTitle)) { ?>
-            <title><?php echo $pageTitle; ?></title>
+            <title><?php echo $app['nama'].'-'.$pageTitle; ?></title>
         <?php } else { ?>
-            <title>Aplikasi RPU</title>
+            <title><?php echo $app['nama'];?></title>
         <?php } ?>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">

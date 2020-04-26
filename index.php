@@ -28,16 +28,17 @@ $hari = hari_ini();
       <li class="nav-item dropdown">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="fas fa-user mr-2"></i>
+          <input type="hidden" id="userid-hide" value="<?php echo $session_id;?>" />
           <span id="#text-user"><?php echo $session_us;?></span>
         </a>
         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
           <a href="#" class="dropdown-item" id="btn-keluar">
             <p class="text-sm"><i class="fas fa-sign-out-alt mr-1"></i>Logout</p>
           </a>
-          <div class="dropdown-divider"></div>
+<!--           <div class="dropdown-divider"></div>
            <a href="#" class="dropdown-item" id="btn-user-profile">
             <p class="text-sm"><i class="fas fa-cog mr-1"></i>Profile</p>
-          </a>
+          </a> -->
         </div>
       </li>
     </ul>
@@ -77,26 +78,6 @@ $hari = hari_ini();
             </section>
      <?php  require_once 'rpu_inc/rpu_beranda_inc.php';
    } ?>
-
-<div class="modal fade" id="modal-print" role="dialog">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="modal-title"></h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
-      </div>
-    </div>
-  </div>
-</div>
 
 <?php require_once 'inc/footer_inc.php'; ?>
 

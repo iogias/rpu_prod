@@ -3,6 +3,7 @@ if (!defined('WEB_ROOT')) {
     exit;
 }
 $set = RpuKatalog::get_settings();
+
 ?>
 <section class="content">
 <div class="container-fluid">

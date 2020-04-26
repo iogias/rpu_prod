@@ -46,7 +46,7 @@ if (!defined('WEB_ROOT')) {
 <div class="card">
 <div class="card-body">
 <div class="table-responsive">
-<table id="tb-lap-penjualan" class="table table-sm text-sm p-2">
+<table id="tb-lap-penjualan" class="table table-hover table-sm text-sm p-2">
     <thead class="text-center">
         <tr>
             <th width="9%">Tgl.Inv</th>
@@ -121,14 +121,14 @@ if (!defined('WEB_ROOT')) {
 <div class="modal fade" id="modal-bayar-inv">
 <div class="modal-dialog">
 <div class="modal-content">
-<div class="modal-header bg-info">
-  <h4 class="modal-title">Pembayaran Invoice</h4>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-  </button>
-</div>
-<div class="modal-body">
-    <form id="f-bayar-inv" name="f-bayar-inv" class="form-horizontal" autocomplete="off">
+<form id="f-bayar-inv" name="f-bayar-inv" class="form-horizontal" autocomplete="off">
+    <div class="modal-header bg-info">
+      <h4 class="modal-title">Pembayaran Invoice</h4>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
       <div class="card-body">
         <div class="form-group row">
           <label for="bayar-nomorinv" class="col-sm-4 col-form-label">Invoice</label>
@@ -171,15 +171,17 @@ if (!defined('WEB_ROOT')) {
             </div>
         </div>
       </div>
-    </form>
-</div>
-    <div class="modal-footer right-content-between">
-    <button type="button" class="btn btn-primary" id="btn-simpan-bayar-inv">Simpan</button>
-    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
     </div>
+    <div class="modal-footer right-content-between">
+        <button type="button" class="btn btn-primary" id="btn-simpan-bayar-inv">Simpan</button>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
+    </div>
+</form>
 </div>
 </div>
 </div>
+
+
 </div>
 </section>
 <script>
@@ -316,8 +318,9 @@ $(function(){
                         "lengthMenu": " _MENU_ baris "
                     },
                     columns: [
+
                         { "data": "tanggal_pembuatan","class":"text-center","render":function(data,type,row){return formatDmy(data);},},
-                        { "data": "nomor_inv","class":"text-center" },
+                        { "data": "nomor_inv","class":"text-center","render":function(data,type,row){return getLinkInv(data);},},
                         { "data": "outlet" },
                         { "data": "status_bayar","class":"text-center","render":function(data,type,row){return lunasBadge(data)},},
                         { "data": "tanggal_jatuh_tempo","class":"text-center","render":function(data,type,row){return formatDmy(data);},},
@@ -331,7 +334,7 @@ $(function(){
                         { "data": "keterangan","class":"pl-3" },
                         { "data": "status_bayar","class":"text-center",
                                 "render":function(data,type,row){
-                                    return lunasButton(data,row.nomor_po,row.grand_total)
+                                    return lunasButtonInv(data,row.nomor_inv,row.grand_total)
                                 },},
                     ],
                     buttons: [

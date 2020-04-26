@@ -95,9 +95,8 @@ function format_uang(el){
 }
 
 function formatCurrency(num) {
+    num = (isNaN(num)||num==null) ? '0' : num
     num = num.toString().replace(/\$|\,/g,'')
-    if(isNaN(num))
-        num = "0";
     sign = (num == (num = Math.abs(num)))
     num = Math.floor(num*100+0.50000000001)
     cents = num%100
@@ -131,10 +130,24 @@ function set_date(ele){
     })
 }
 
+function hariIni(){
+    let today = new Date()
+    let dd = String(today.getDate()).padStart(2, '0')
+    let mm = String(today.getMonth() + 1).padStart(2, '0') //January is 0!
+    let yyyy = today.getFullYear()
+    today = dd + '-' + mm + '-' + yyyy
+    return today
+}
+
 function formatDmy(str){
     str = str.split('-')
     let tgl = str[2]+'-'+str[1]+'-'+str[0]
     return tgl
+}
+
+function statusBadge(sts){
+    let status = (sts=='1')?'<span class="badge badge-success">Aktif</span>':'<span class="badge badge-danger">Non-Aktif</span>';
+    return status
 }
 
 function lunasBadge(lunas){
@@ -150,10 +163,24 @@ function lunasButton(lunas,po,total){
     return btncontrol
 }
 
+function lunasButtonInv(lunas,inv,total){
+    //let dis = ($inv["cara_bayar"]=='LUNAS'||$inv["status_bayar"]=='lunas')?'disabled':'enabled';
+    let dis = (lunas=='Lunas')?'disabled':'enabled';
+    let btncontrol = '<button type="button" data-total-inv="'+total+'" data-toggle="modal" data-target="#modal-bayar-inv" class="btn btn-primary btn-sm btn-bayar-inv" id="'+inv+'" '+dis+'>'+
+            '<i class="fas fa-handshake mr-2"></i>Bayar</button>'
+    return btncontrol
+}
+
 function edButton(id){
     let btn = '<button type="button" data-toggle="modal" data-target="#modal-biaya" class="btn btn-warning btn-sm edit-biaya" id="edit-'+id+'">'
         btn +='<i class="fas fa-pencil-alt"></i></button>'
         btn +='<button type="button" class="btn btn-danger btn-sm del-biaya" id="del-'+id+'"><i class="fas fa-trash-alt"></i></button>'
+    return btn
+}
+
+function edButtonProduk(id){
+    let btn = '<button type="button" data-toggle="modal" data-target="#modal-produk" class="btn btn-warning btn-sm edit-produk" id="edit-'+id+'">'
+        btn +='<i class="fas fa-pencil-alt"></i></button>'
     return btn
 }
 
@@ -166,4 +193,34 @@ function validAlphaNum(str){
     if(validalphanum.test(str)){
         return str
     }
+}
+
+// function stokReady(stok,beli,jual,lain){
+//     let ss = 0
+//     jual = (jual==null||isNaN(jual)) ? '0' : jual
+//     lain = (lain==null||isNaN(lain)) ? '0' : lain
+//     if (stok == null) {
+//         ss = parseInt(beli) - parseInt(jual) - parseInt(lain)
+//     } else {
+//         ss = stok
+//     }
+//     return ss
+// }
+
+function getLinkInv(inv){
+    if (inv!=''){
+        return '<a href="index.php?action=rpu_pos&nomorinv='+inv+'">'+inv+'</a>'
+    }
+}
+
+function getLinkPo(po){
+    if (po!=''){
+        return '<a href="index.php?action=rpu_pembelian&nomorpo='+po+'">'+po+'</a>'
+    }
+}
+
+function returButton(id){
+    let btn = '<button type="button" data-toggle="modal" data-target="#modal-retur-produk" class="btn btn-danger btn-sm retur-produk" id="retur-'+id+'">'
+        btn +='<i class="fas fa-undo mr-2"></i>Retur</button>'
+    return btn
 }

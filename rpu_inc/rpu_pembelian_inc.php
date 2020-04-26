@@ -102,22 +102,34 @@ $ongkir = ($beli['ongkir']==0) ? '' : money_simple($beli['ongkir']);
             </div> <!--end row -->
             <br />
             <div class="row">
-            <div class="col-sm-12">
-            <p class="lead">
-                <i class="fas fa-th text-secondary mr-2"></i>Detail Pembelian
-                <span class="float-right">
-                <button type="button" class="btn btn-info btn-sm" id="tambah-detail-po" disabled>
+                <div class="col-sm-2">
+                    <p class="lead"><i class="fas fa-th text-secondary mr-2"></i>Detail Pembelian</p>
+                </div>
+                <div class="col-sm-4">
+                    <button type="button" class="btn btn-success" id="list-produk-po" data-toggle="modal" data-target="#modal-tbproduk-po">
+                    <i class="fas fa-search mr-2"></i>List Produk
+                    </button>
+                    <button type="button" class="btn btn-primary" id="tambah-produk" data-toggle="modal" data-target="#modal-produk-po" disabled>
+                    <i class="fas fa-plus mr-2"></i>Produk Baru
+                    </button>
+                </div>
+                <div class="col-sm-2">
+                    <p>&nbsp;</p>
+                </div>
+                <div class="col-sm-4 text-right">
+                    <button type="button" class="btn btn-info" id="tambah-detail-po" disabled>
                     <i class="fas fa-plus mr-2"></i>Tambah Item
-                </button>
-                </span>
-            </p>
+                    </button>
+                </div>
+            </div>
+            <div class="row">
+            <div class="col-sm-12">
             <div class="table-responsive">
             <table class="table table-sm table-striped table-head-fixed text-nowrap p-1" id="tb-detail-po">
                 <thead class="bg-gray">
                     <td style="width:3%;">&nbsp;</td>
                     <td style="width:10%;"><div class="text-center">Kode</div></td>
                     <td style="width:22%;"><div class="text-center">Produk</div></td>
-                    <td style="width:3%;">&nbsp;</td>
                     <td style="width:12%;"><div class="text-center">@Harga Beli</div></td>
                     <td style="width:5%;"><div class="text-center">Qty <small>(pcs)</small></div></td>
                     <td><div class="text-center">@Avg.Berat <small>(kg)</small></div></td>
@@ -142,11 +154,6 @@ $ongkir = ($beli['ongkir']==0) ? '' : money_simple($beli['ongkir']);
                     <td>
                         <input value="<?php echo $produk[$nn]['nama'];?>" type="text" class="form-control-plaintext p-0 m-0 form-po nama-prod" name="det-td-nama-produk" id="td-nama-produk-<?php echo $nn;?>" required/>
                         <ul id="list-produk-nama-<?php echo $nn;?>" class="list-group"></ul>
-                    </td>
-                    <td>
-                        <button disabled type="button" class="btn btn-info btn-sm btn-flat m-0" id="tambah-produk" data-toggle="modal" data-target="#modal-produk-po">
-                            <i class="fas fa-plus"></i>
-                        </button>
                     </td>
                     <td>
                         <input value="<?php echo money_simple($produk[$nn]['harga_beli']);?>" type="text" class="form-control-plaintext p-0 m-0 text-right form-po format-uang harga-qty" name="det-td-harga-produk" id="td-hargaprodukpo-<?php echo $nn;?>" placeholder="0" required/>
@@ -251,6 +258,36 @@ $ongkir = ($beli['ongkir']==0) ? '' : money_simple($beli['ongkir']);
 </form>
 </div>
 </div>
+<!-- MODAL TABLE -->
+<div class="modal fade" id="modal-tbproduk-po">
+<div class="modal-dialog modal-lg">
+<div class="modal-content">
+<div class="modal-header bg-info">
+  <h4 class="modal-title">List Produk</h4>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="modal-body">
+<div class="table-responsive">
+    <table id="tb-produk-po" class="table table-sm text-sm table-striped">
+        <thead class="text-center">
+            <tr>
+                <th width="10%">Kode</th>
+                <th>Nama</th>
+                <th width="15%" class="text-center">Harga Beli</th>
+                <th width="15%" class="text-center">Stok Ready</th>
+                <th width="15%">Kategori</th>
+                <th width="6%">Status</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- END MODAL TABLE -->
 <?php $kg=RpuKatalog::getAllKategoriProduk(); ?>
 <div class="modal fade" id="modal-produk-po">
 <div class="modal-dialog modal-md">
@@ -308,7 +345,8 @@ $ongkir = ($beli['ongkir']==0) ? '' : money_simple($beli['ongkir']);
 </div>
 </div>
 </div>
-</div><!--end container-->
+</div>
+</div>
 </section>
 <script>
 $(function(){
@@ -454,6 +492,7 @@ $(function(){
         if(nomr==''){
             enable_form()
             enable_btn($('#tambah-detail-po'))
+            enable_btn($('#tambah-produk'))
             disable_btn($(this))
             $.post(service_url+'s_pembelian.php',{
                 token:param
@@ -486,8 +525,6 @@ $(function(){
         html +='<td><input type="text" class="form-control-plaintext p-0 m-0" name="det-td-kode-produk" id="td-kode-produk-'+idNum+'" placeholder="R" readonly /></td>'
         html +='<td><input type="text" class="form-control-plaintext p-0 m-0 nama-prod" name="det-td-nama-produk" id="td-nama-produk-'+idNum+'" required/>'+
                 '<ul id="list-produk-nama-'+idNum+'" class="list-group"></ul></td>'
-        html +='<td><button type="button" class="btn btn-info btn-sm btn-flat m-0" id="tambah-produk" data-toggle="modal" data-target="#modal-produk-po">'+
-                '<i class="fas fa-plus"></i></button></td>'
         html +='<td><input type="text" class="form-control-plaintext p-0 m-0 text-right format-uang harga-qty" name="det-td-harga-produk" id="td-hargaprodukpo-'+idNum+'" placeholder="0" required/></td>'
         html +='<td><input type="number" min="1" class="form-control-plaintext p-0 m-0 text-center harga-qty" name="det-td-qty-pcs" id="td-qtypcs-'+idNum+'" placeholder="0" required /></td>'
         html +='<td><input type="number" min="0" step="0.01" class="form-control-plaintext p-0 m-0 text-center harga-qty" name="det-td-qty-kg" id="td-qtykg-'+idNum+'" placeholder="0.0" /></td>'
@@ -497,7 +534,7 @@ $(function(){
         html +='<td class="pr-3"><input type="text" class="form-control-plaintext p-0 m-0 text-right" name="det-td-subtotal-produk" id="td-subtotalproduk-'+idNum+'" placeholder="R" readonly /></td>'
         html +='</tr>'
 
-        $('#tb-detail-po tbody').prepend(html)
+        $('#tb-detail-po tbody').append(html)
         $('#td-nama-produk').focus()
 
     })
@@ -640,6 +677,11 @@ $(function(){
         simpan_update('update-po')
     })
 
+    $('#modal-tbproduk-po').on('shown.bs.modal',function(){
+        $('#tb-produk-po').DataTable().destroy()
+        fetch_produk()
+    })
+
     $('#btn-print-po').click(function(e){
         e.preventDefault()
         let nomor = $('#text-nomorpo').text()
@@ -767,10 +809,6 @@ $(function(){
                         window.setTimeout(function(){
                             window.location.href = 'index.php?action=rpu_pembelian'
                         },1500)
-
-                      // form[0].reset()
-                      // $("#tb-detail-po tbody").empty()
-                      // $("#text-nomorpo").text("");
                      } else{
                       toastr.error('ERROR INPUT DATA!')
                      }
@@ -845,6 +883,56 @@ $(function(){
             obj.push(data)
         })
         return obj
+    }
+
+    function fetch_produk(arg='99') {
+        $.ajax({
+                url: service_url+'s_katalog.php',
+                method: 'POST',
+                dataType: 'json',
+                data:{
+                        token:'produk',
+                        arg:arg
+                }
+            }).done(function(data){
+                let tb = $('#tb-produk-po').DataTable({
+                    //dom:'<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>t<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"p>>',
+                    aaData: data,
+                    processing:true,
+                    autoWidth:false,
+                    info:false,
+                    scrollCollapse: true,
+                    paginationType: "full_numbers",
+                    lengthMenu: [
+                          [10, 25, 50, 100],
+                          [10, 25, 50, 100]
+                    ],
+                    language: {
+                        "search"  : "Cari: ",
+                        "paginate":{
+                            "first"   : "Awal ",
+                            "last"    : "Akhir ",
+                            "previous": "",
+                            "next"    : "",
+                        },
+                        "lengthMenu": " _MENU_ baris "
+                    },
+                    columns: [
+                        { "data": "kode_produk",},
+                        { "data": "nama" },
+                        { "data": "harga_beli","class":"text-right","render": function (data,type,row){
+                                return formatCurrency(data);
+                            },},
+                        { "data": "qty_beli","class":"text-right",function (data,type,row){
+                                return stokReady(data,row.qty_jual,row.lainnya);
+                            },},
+                        { "data": "kategori","class":"pl-3" },
+                        { "data": "status","class":"text-center","render":function(data,type,row){
+                                    return statusBadge(data)
+                            },},
+                    ],
+                });
+            });
     }
 
 })

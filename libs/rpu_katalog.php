@@ -114,23 +114,31 @@ class RpuKatalog {
         $param = array('status'=>$arg);
         return DbHandler::getAll($sql,$param);
     }
-    // public static function getAllCustomerGroup(){
-    //     $sql = "SELECT * FROM tb_customergroup";
-    //     return DbHandler::getAll($sql);
-    // }
-    public static function getAllProdukJoin($arg='99'){
-        $sql = "SELECT p.id,p.kode_produk,p.nama,p.nama_jual,p.harga_beli,p.hpp,
-                p.harga_jual,p.lainnya,p.status,s.nama AS supplier,k.nama AS kategori\n";
-        $sql .= "FROM tb_produk p JOIN tb_pembelian_detail d ON d.kode_produk=p.kode_produk\n";
-        $sql .= "LEFT JOIN tb_kategori_produk k ON k.id=p.kategoriproduk_id\n";
-        $sql .= "LEFT JOIN tb_pembelian b ON b.nomor_po=d.nomor_po\n";
-        $sql .= "LEFT JOIN tb_supplier s ON s.id=b.id_supplier\n";
-        if($arg!='99'){
-            $sql .= "WHERE p.status='".(int)$arg."'\n";
+
+    public static function getAllProdukJoin($arg='99',$arg2='00'){
+        $sql = "SELECT pr.id,pr.kode_produk,pr.nama,pr.nama_jual,qbeli.beli AS qty_beli,COALESCE(qjual.jual,0) AS qty_jual,
+                pr.harga_beli,pr.harga_jual,pr.hpp,pr.lainnya,kg.nama AS kategori,pr.status,
+                COALESCE((qbeli.beli-qjual.jual-pr.lainnya),qbeli.beli) AS stok_ready
+                FROM
+                (SELECT SUM(b.produk_qty) AS beli,b.kode_produk FROM tb_pembelian_detail b GROUP BY b.kode_produk) AS qbeli
+                LEFT JOIN
+                (SELECT SUM(COALESCE(j.produk_qty,0)) AS jual,j.kode_produk FROM tb_penjualan_detail j GROUP BY j.kode_produk) AS qjual
+                ON qbeli.kode_produk=qjual.kode_produk
+                LEFT JOIN tb_produk pr ON pr.kode_produk=qbeli.kode_produk
+                JOIN tb_kategori_produk kg ON kg.id=pr.kategoriproduk_id\n";
+        if($arg2!='00' && $arg!='99'){
+            $sql .= "WHERE pr.kategoriproduk_id='".(int)$arg2."'\n";
+            $sql .= "AND pr.status='".(int)$arg."'\n";
+        } else if ($arg2!='00' || $arg!='99'){
+            $sql .= "WHERE pr.kategoriproduk_id='".(int)$arg2."'\n";
+            $sql .= "OR pr.status='".(int)$arg."'\n";
         }
-        $sql .= "GROUP BY p.kode_produk ORDER BY p.nama ASC";
-        $param = array('status'=>$arg);
-        return DbHandler::getAll($sql,$param);
+        // if($arg!='99'){
+        //     $sql .= "AND pr.status='".(int)$arg."'\n";
+        // }
+        $sql .= "ORDER BY pr.nama ASC";
+        $params = array('status'=>$arg,'kategoriproduk_id'=>$arg2);
+        return DbHandler::getAll($sql,$params);
     }
 
     public static function getAllProdukJoinById($id){
@@ -492,7 +500,12 @@ class RpuKatalog {
         return DbHandler::getRow($sql);
     }
 
-     public static function update_settings($data){
+    public static function get_aplikasi(){
+        $sql = "SELECT * FROM tb_aplikasi";
+        return DbHandler::getRow($sql);
+    }
+
+    public static function update_settings($data){
         $sql = "UPDATE tb_settings
                 SET nama_usaha='".$data['nama-usaha']."',
                 alamat_usaha='".$data['alamat-usaha']."',
@@ -627,6 +640,14 @@ class RpuKatalog {
         $sql = "SELECT SUM(nominal) AS total
                 FROM tb_biaya
                 WHERE kode_kategori<>'BV' AND tanggal BETWEEN '".$awal."' AND '".$akhir."'";
+        $param = array('tanggal' => $awal,'tanggal'=>$akhir);
+        return DbHandler::getRow($sql,$param);
+    }
+
+    public static function get_all_totalan_biaya($awal,$akhir){
+        $sql = "SELECT SUM(nominal) AS nominal, COUNT(id) AS countr
+                FROM tb_biaya
+                WHERE tanggal BETWEEN '".$awal."' AND '".$akhir."'";
         $param = array('tanggal' => $awal,'tanggal'=>$akhir);
         return DbHandler::getRow($sql,$param);
     }

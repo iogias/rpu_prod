@@ -12,6 +12,22 @@ $kg=RpuKatalog::getAllKategoriProduk();
       <div class="col-sm-3">
       <div class="input-group">
         <div class="input-group-prepend">
+          <span class="input-group-text">Kategori</span>
+        </div>
+        <select name="filter-kategori" id="filter-kategori" class="form-control">
+          <option value="00">SEMUA</option>
+          <?php
+              for ($g = 0; $g < count($kg); $g++) {
+                $idq = $kg[$g]['id'];
+                ?>
+                <option value="<?php echo $idq;?>"><?php echo $kg[$g]['nama'];?></option>
+              <?php } ?>
+        </select>
+      </div>
+      </div>
+      <div class="col-sm-3">
+      <div class="input-group">
+        <div class="input-group-prepend">
           <span class="input-group-text">Status</span>
         </div>
         <select name="filter-status" id="filter-status" class="form-control">
@@ -20,10 +36,13 @@ $kg=RpuKatalog::getAllKategoriProduk();
           <option value="0">NON-AKTIF</option>
         </select>
       </div>
-    </div>
+      </div>
+      <div class="col-sm-3">
+      <button type="button" id="btn-proses-produk" class="btn btn-info">PROSES<i class="fas fa-angle-double-right ml-3"></i></button>
+      </div>
   </div>
   </div>
-<div class="card-body">
+<div class="card-body p-3">
 <div class="row">
 <div class="col-md-12">
 <div class="table-responsive">
@@ -33,18 +52,36 @@ $kg=RpuKatalog::getAllKategoriProduk();
     <th>Kode</th>
     <th>Nama Beli</th>
     <th>Nama Jual</th>
-    <th width="9%">Harga Beli</th>
-    <th width="9%">HPP</th>
-    <th width="9%">Harga Jual</th>
+    <th class="text-center">Harga Beli</th>
+    <th class="text-center">HPP</th>
+    <th class="text-center">Harga Jual</th>
     <th>Stok Ready</th>
-    <th>Terjual</th>
-    <th>Lainnya</th>
-    <th>Total</th>
+    <th class="text-center">Terjual</th>
+    <th class="text-center">Lainnya</th>
+    <th class="text-center">Total</th>
     <th>Kategori</th>
-    <th width="5%">Status</th>
-    <th width="4%" class="text-center">&nbsp;</th>
+    <th>Status</th>
+    <th class="text-center">&nbsp;</th>
   </tr>
   </thead>
+  <tbody></tbody>
+  <tfoot>
+    <tr>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>Total</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+      <th>&nbsp;</th>
+    </tr>
+  </tfoot>
   </table>
 </div>
 </div>
@@ -175,25 +212,21 @@ $kg=RpuKatalog::getAllKategoriProduk();
 <script>
 $(function () {
   let param = 'produk'
-  fetch_produk()
-  function fetch_produk(arg='99'){
-      let datatable = $('#tb-'+param).DataTable({
-          'autoWidth': false,
-          'processing': true,
-          'serverside': true,
-          'ajax':{
-              url:service_url+'s_katalog.php',
-              type:'POST',
-              data:{token:param,
-                args:arg},
-          }
-      })
-  }
 
-  $('#filter-status').change(function(e){
-    let vale = $(this).val()
+  fetch_produk()
+
+  // $('#filter-status').change(function(e){
+  //   let vale = $(this).val()
+  //   $('#tb-'+param).DataTable().destroy()
+  //   fetch_produk(vale)
+  // })
+
+  $('#btn-proses-produk').click(function(e){
+    e.preventDefault()
+    let filter_stat = $('#filter-status').val()
+    let filter_kat = $('#filter-kategori').val()
     $('#tb-'+param).DataTable().destroy()
-    fetch_produk(vale)
+    fetch_produk(filter_stat,filter_kat)
   })
 
   $(document).on('click','.edit-'+param,function(e){
@@ -229,26 +262,6 @@ $(function () {
         }
     },'json')
   })
-
-  // $(document).on('blur','#stok-lain-tambah',function(){
-  //   let ready = parseInt($('#stok-ready').val())
-  //   let terjual = parseInt($('#stok-terjual').val())
-  //   let lainnya = parseInt($('#stok-lainnya').val())
-  //   let tambah = ($(this).val()=='') ? 0 : parseInt($(this).val())
-  //   tambah += lainnya
-  //   ready = ready - lainnya - tambah
-  //   if(lainnya>ready || lainnya==''||isNaN(lainnya)){
-  //     toastr.warning('Nilai harus lebih besar dari sblmnya & lebih kecil dari stok')
-  //     return false
-  //     // toastr.warning('QTY TIDAK BOLEH LEBIH DARI JUMLAH STOK : '+stok)
-  //     //       $('#td-qtypcs-'+num).val('')
-  //     //       $('#td-qtypcs-'+num).focus()
-  //     // return false
-  //   }else{
-  //     $('#stok-ready').val(ready)
-  //   }
-
-  // })
 
   $(document).on('keyup','.harga-produk','',function(){
         let nilai = $(this)
@@ -334,5 +347,144 @@ $(function () {
             toastr.warning(fail_log)
         }
     })
+
+  function fetch_produk(arg='99',arg2='00') {
+        $.ajax({
+                url: service_url+'s_katalog.php',
+                method: 'POST',
+                dataType: 'json',
+                data:{
+                        token:param,
+                        arg:arg,
+                        arg2:arg2
+                }
+            }).done(function(data){
+                let skrg = hariIni()
+                let judul = 'Rekap Produk per tanggal : ' + skrg
+                let tb = $('#tb-'+param).DataTable({
+                    dom:'<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>t<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"p>>',
+                    aaData: data,
+                    processing:true,
+                    autoWidth:false,
+                    scrollCollapse: true,
+                    paginationType: "full_numbers",
+                    lengthMenu: [
+                          [10, 25, 50, 100],
+                          [10, 25, 50, 100]
+                    ],
+                    language: {
+                        "search"  : "Cari: ",
+                        "paginate":{
+                            "first"   : "Awal ",
+                            "last"    : "Akhir ",
+                            "previous": "",
+                            "next"    : "",
+                        },
+                        "lengthMenu": " _MENU_ baris "
+                    },
+                    columns: [
+                        { "data": "kode_produk",},
+                        { "data": "nama" },
+                        { "data": "nama_jual",},
+                        { "data": "harga_beli","class":"text-right","render": function (data,type,row){
+                                return formatCurrency(data);
+                            },},
+                        { "data": "hpp","class":"text-right","render": function (data,type,row){
+                                return formatCurrency(data);
+                            },},
+                        { "data": "harga_jual","class":"text-right","render": function (data,type,row){
+                                return formatCurrency(data);
+                            },},
+                        { "data": "stok_ready","class":"text-right text-primary","render":function (data,type,row){
+                                return formatCurrency(data);
+                            },},
+                        { "data": "qty_jual","class":"text-right text-success",},
+                        { "data": "lainnya","class":"text-right text-danger" },
+                        { "data": "qty_beli","class":"text-right" },
+                        { "data": "kategori","class":"pl-3" },
+                        { "data": "status","class":"text-center","render":function(data,type,row){
+                                    return statusBadge(data)
+                            },},
+                        { "data": "id","class":"text-center","render":function(data,type,row){
+                                    return edButtonProduk(data)
+                            },},
+                    ],
+                    buttons: [
+                        {
+                            extend:'excelHtml5',
+                            className:'btn-success',
+                            text:'<i class="fa fa-file-excel"></i> EXCEL',
+                            footer:true,
+                            title:function(){
+                                return judul
+                            },
+                            exportOptions: {
+                                columns:[1,2,3,4,5,6,7,8,9,10,11,12],
+                                modifier: {
+                                    page: 'current',
+                                }
+                            },
+                        },
+                        {
+                            extend:'pdfHtml5',
+                            className:'btn-danger',
+                            text:'<i class="fa fa-file-pdf"></i> PDF',
+                            footer:true,
+                            title:function(){
+                                return judul
+                            },
+                            exportOptions: {
+                                columns:[1,2,3,4,5,6,7,8,9,10,11,12],
+                                modifier: {
+                                    page: 'current',
+                                }
+                            },
+                        },
+                        {
+                            extend:'print',
+                            footer:true,
+                            autoPrint:true,
+                            text:'<i class="fa fa-print"></i> PRINT',
+                            title:'',
+                            exportOptions: {
+                                columns:[1,2,3,4,5,6,7,8,9,10,11,12],
+                                modifier: {
+                                    page: 'current',
+                                }
+                            },
+                            customize: function(win) {
+                                $(win.document.body)
+                                    .css('font-size','10pt')
+                                    .prepend('<h5 class="text-center">Rekap Produk per tanggal : '+skrg+'</h5>');
+                                $(win.document.body).find('table')
+                                    .addClass('compact')
+                                    .css('font-size','inherit');
+                            }
+                        },
+                    ],
+                    footerCallback: function(row,data,start,end,display) {
+                        var api = this.api(), data;
+
+                        var colNumber = [6,7,8,9];
+                        var intVal = function (i) {
+                            return typeof i === 'string' ?
+                                    i.replace(/[, ₹]|(\.\d{2})/g, "") * 1 :
+                                    typeof i === 'number' ?
+                                    i : 0;
+                        };
+                        for (i = 0; i < colNumber.length; i++) {
+                            var colNo = colNumber[i];
+                            var total2 = api
+                                    .column(colNo,{page:'current'})
+                                    .data()
+                                    .reduce(function (a,b) {
+                                        return intVal(a) + intVal(b);
+                                    }, 0);
+                            $(api.column(colNo).footer()).html(formatCurrency(total2));
+                        }
+                      },
+                });
+            });
+    }
 })
 </script>

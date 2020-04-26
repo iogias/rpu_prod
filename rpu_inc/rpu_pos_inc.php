@@ -19,7 +19,6 @@ $userid = ($jual['id_pembuat']=='') ? $session_id : $jual['id_pembuat'];
 $tgl_order =($jual['tanggal_order']=='') ? '' : dmy($jual['tanggal_order']);
 $tgljtinv =($jual['tanggal_jatuh_tempo']=='') ? '' : dmy($jual['tanggal_jatuh_tempo']);
 $disk_inv = ($jual['diskon']==0) ? '' : $jual['diskon'];
-//$disk_inv_rp = ($disk_inv/100)*$jual['total_jumlah'];
 $kur_inv = ($jual['pengurangan']==0) ? '' : money_simple($jual['pengurangan']);
 $ongkir_inv = ($jual['ongkir']==0) ? '' : money_simple($jual['ongkir']);
 ?>
@@ -530,7 +529,7 @@ $(function(){
                 '<datalist id="td-perkalian-'+idNum+'"><option value="QTY" /><option value="KG" /></datalist></td>'
         html +='<td class="pr-3"><input type="text" class="form-control-plaintext p-0 m-0 text-right" name="det-td-subtotal-produk" id="td-subtotalproduk-'+idNum+'" placeholder="R" readonly /></td>'
         html +='</tr>'
-        $('#tb-detail-inv tbody').prepend(html)
+        $('#tb-detail-inv tbody').append(html)
         $('#td-nama-produk-'+idNum).focus()
     })
 

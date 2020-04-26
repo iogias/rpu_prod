@@ -105,42 +105,10 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
     echo json_encode($res);
 } else if(isset($_POST['token']) && $_POST['token']=='produk'){
     $arg = $_POST['token'];
-    $param = $_POST['args'];
-    $produk=RpuKatalog::getAllProdukJoin($param);
-    $data=array();
-    for ($i = 0; $i < count($produk); $i++) {
-        $qty_beli=RpuKatalog::qty_produk_beli($produk[$i]["kode_produk"]);
-        $qty_jual=RpuKatalog::qty_produk_jual($produk[$i]["kode_produk"]);
-        $qty_ready=$qty_beli-$qty_jual-$produk[$i]["lainnya"];
-        $nama_jual = ($produk[$i]['nama_jual']=='nama_jual')?$produk[$i]['nama']:$produk[$i]['nama_jual'];
-        $sub=array();
-        $status=($produk[$i]['status']==1) ? '<span class="badge badge-success">'.'Aktif'.'</span>' : '<span class="badge badge-secondary">'.'Non-Aktif'.'</span>';
-        $harga_jual=$produk[$i]['harga_jual']==0 ? '0' : money_simple($produk[$i]["harga_jual"]);
-        $hpp=$produk[$i]["hpp"]==0 ? '0' : money_simple($produk[$i]["hpp"]);
-        $sub[]='<div class="text-center">'.$produk[$i]["kode_produk"].'</div>';
-        $sub[]='<div>'.$produk[$i]["nama"].'</div>';
-        $sub[]='<div>'.$nama_jual.'</div>';
-        $sub[]='<div class="text-right pr-3">'.money_simple($produk[$i]["harga_beli"]).'</div>';
-        $sub[]='<div class="text-right pr-3">'.$hpp.'</div>';
-        $sub[]='<div class="text-right pr-3">'.$harga_jual.'</div>';
-        $sub[]='<div class="text-center">'.money_simple($qty_ready).'</div>';
-        $sub[]='<div class="text-center text-info">'.money_simple($qty_jual).'</div>';
-        $sub[]='<div class="text-center text-danger">'.$produk[$i]["lainnya"].'</div>';
-        $sub[]='<div class="text-center">'.money_simple($qty_beli).'</div>';
-        $sub[]='<div class="text-center">'.$produk[$i]["kategori"].'</div>';
-        $sub[]='<div class="text-center">'.$status.'</div>';
-        $sub[]='<div class="text-center"><button title="Edit" type="button" data-toggle="modal" data-target="#modal-'.$arg.'" class="btn btn-warning btn-sm edit-'.$arg.'" id="edit-'.$produk[$i]["id"].'">
-                <i class="fas fa-pencil-alt"></i></button>
-                </div>';
-        $data[]=$sub;
-    }
-
-    $res = array(
-        "data"=>$data
-    );
-
-    echo json_encode($res);
-
+    $param = $_POST['arg'];
+    $param2 = $_POST['arg2'];
+    $produk=RpuKatalog::getAllProdukJoin($param,$param2);
+    echo json_encode($produk);
 } else if(isset($_POST['token']) && $_POST['token']=='customergroup'){
     $arg = $_POST['token'];
     $param = $_POST['args'];
@@ -171,7 +139,7 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
 } else if (isset($_POST['token']) && $_POST['token']=='totalan_biaya'){
     $awal = ymd($_POST['awal']);
     $akhir = ymd($_POST['akhir']);
-    $rows=RpuKatalog::get_totalan_biaya($awal,$akhir);
+    $rows=RpuKatalog::get_all_totalan_biaya($awal,$akhir);
     $nominal = ($rows['nominal']==0)?'0':money_simple($rows['nominal']);
     echo '{"status":true,"nominal":"'.$nominal.'","countr":"'.$rows['countr'].'"}';
 } else if(isset($_POST['token']) && $_POST['token']=='jenis_biaya'){

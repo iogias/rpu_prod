@@ -2,12 +2,10 @@
 if (!defined('WEB_ROOT')) {
     exit;
 }
-if(isset($_SESSION['username']) && isset($_SESSION['id'])){
-$session_us = $_SESSION['username'];
-$session_id = $_SESSION['id'];
-// $user = RpuUser::get_user($session_id);
-// print_r($user);
-
+if (isset($_GET['userid']) && $_GET['userid'] !='') {
+  $userid = $_GET['userid'];
+} else if (isset($_SESSION['id'])&&$_SESSION['id']!='') {
+  $userid = $_SESSION['id'];
 }
 ?>
 <section class="content">

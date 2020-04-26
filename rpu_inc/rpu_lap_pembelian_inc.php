@@ -46,7 +46,7 @@ if (!defined('WEB_ROOT')) {
 <div class="card">
 <div class="card-body">
     <div class="table-responsive">
-    <table id="tb-lap-pembelian" class="table table-sm text-sm p-2">
+    <table id="tb-lap-pembelian" class="table table-hover table-sm text-sm p-2">
         <thead>
         <tr>
             <th width="9%" class="text-center">Tgl.PO</th>
@@ -315,7 +315,7 @@ $(function(){
                     },
                     columns: [
                         { "data": "tanggal_pembuatan","class":"text-center","render":function(data,type,row){return formatDmy(data);},},
-                        { "data": "nomor_po","class":"text-center" },
+                        { "data": "nomor_po","class":"text-center","render":function(data,type,row){return getLinkPo(data);},},
                         { "data": "supplier" },
                         { "data": "status_bayar","class":"text-center","render":function(data,type,row){return lunasBadge(data)},},
                         { "data": "tanggal_jatuh_tempo","class":"text-center","render":function(data,type,row){return formatDmy(data);},},
