@@ -885,14 +885,15 @@ $(function(){
         return obj
     }
 
-    function fetch_produk(arg='99') {
+    function fetch_produk(arg='99',arg2='00') {
         $.ajax({
                 url: service_url+'s_katalog.php',
                 method: 'POST',
                 dataType: 'json',
                 data:{
                         token:'produk',
-                        arg:arg
+                        arg:arg,
+                        arg2:arg2
                 }
             }).done(function(data){
                 let tb = $('#tb-produk-po').DataTable({

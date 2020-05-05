@@ -21,6 +21,7 @@ $tgljtinv =($jual['tanggal_jatuh_tempo']=='') ? '' : dmy($jual['tanggal_jatuh_te
 $disk_inv = ($jual['diskon']==0) ? '' : $jual['diskon'];
 $kur_inv = ($jual['pengurangan']==0) ? '' : money_simple($jual['pengurangan']);
 $ongkir_inv = ($jual['ongkir']==0) ? '' : money_simple($jual['ongkir']);
+$diskon_rp = ($jual['diskon_rp']==0) ? '' : money_simple($jual['diskon_rp']);
 ?>
 <section class="content">
 <div class="container-fluid">
@@ -211,10 +212,16 @@ $ongkir_inv = ($jual['ongkir']==0) ? '' : money_simple($jual['ongkir']);
                         <input value="<?php echo $disk_inv;?>" placeholder="0" type="number" min="0" max="100" class="extra-input-inv form-control-plaintext p-0 m-0 text-right form-inv" name="td-diskon-inv" id="td-diskon-inv" />
                         </td>
                     </tr>
-                     <tr>
+                    <tr>
                         <th>Diskon dalam <small>(Rp) (-)</small></th>
                         <td class="pr-3">
-                        <input value="<?php echo $kur_inv;?>" placeholder="0" type="text" class="extra-input-inv form-control-plaintext p-0 m-0 text-right form-inv format-uang" name="td-pengurangan-inv" id="td-pengurangan-inv" />
+                        <input value="<?php echo $kur_inv;?>" placeholder="0" type="text" class="extra-input-inv form-control-plaintext p-0 m-0 text-right form-inv format-uang" name="td-pengurangan-inv" id="td-pengurangan-inv" readonly />
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>Diskon Rp <small>(Rp) (-)</small></th>
+                        <td class="pr-3">
+                        <input value="<?php echo $diskon_rp;?>" placeholder="0" type="text" class="extra-input-inv form-control-plaintext p-0 m-0 text-right form-inv format-uang" name="td-diskon-rp" id="td-diskon-rp" />
                         </td>
                     </tr>
                     <tr>
@@ -631,7 +638,11 @@ $(function(){
         let kurang = (dis/100)*sbt
         kurang = formatNormal(kurang)
         kurang = ($('#td-pengurangan-inv').val() == '') ? 0 : kurang
-        update_total(sbt,dis,ong,kurang)
+        let diskon_rp=$('#td-diskon-rp').val()
+        diskon_rp=formatNormal(diskon_rp)
+        diskon_rp=($('#td-diskon-rp').val() == '') ? 0 : diskon_rp
+
+        update_total(sbt,dis,ong,kurang,diskon_rp)
     })
 
     $(document).on('click', '.btn-hapus-row', function(e) {
@@ -702,6 +713,7 @@ $(function(){
         let ongkir = 0
         let total = 0
         let kurang = 0
+        let diskon_rp=0
         $('#tb-detail-inv > tbody > tr').each(function(){
             let qty = $(this).find('input[name="det-td-qty-pcs"]').val()
             let sub = $(this).find('input[name="det-td-subtotal-produk"]').val()
@@ -735,16 +747,18 @@ $(function(){
         diskon = ($('#td-diskon-inv').val() == '') ? 0 : $('#td-diskon-inv').val()
         ongkir = ($('#td-ongkir-inv').val() == '') ? 0 : formatNormal($('#td-ongkir-inv').val())
         kurang = ($('#td-pengurangan-inv').val() == '') ? 0 : formatNormal($('#td-pengurangan-inv').val())
-        update_total(sbbt,diskon,ongkir,kurang)
+        diskon_rp = ($('#td-diskon-rp').val() == '') ? 0 : formatNormal($('#td-diskon-rp').val())
+        update_total(sbbt,diskon,ongkir,kurang,diskon_rp)
     }
 
-    function update_total(subt,diskon,ongkir,kurang){
+    function update_total(subt,diskon,ongkir,kurang,diskon_rp){
         subt = parseFloat(subt)
         diskon = parseFloat(diskon)
         ongkir = parseFloat(ongkir)
         kurang = parseFloat(kurang)
+        diskon_rp=parseFloat(diskon_rp)
         diskon = subt*(diskon/100)
-        total = (subt - diskon) + ongkir
+        total = (subt - diskon - diskon_rp) + ongkir
         total = formatCurrency(total)
 
         $('#td-pengurangan-inv').val(formatCurrency(diskon))

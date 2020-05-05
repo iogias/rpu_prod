@@ -36,27 +36,26 @@ if (!defined('WEB_ROOT')) {
   </div>
   </div>
   <div class="col-md-7">
-    <div class="card">
-      <div class="card-header">
-          <div class="form-group row">
-            <label for="tgl-awal-biaya" class="col-form-label">Periode</label>
-            <div class="col-sm-3">
-            <input value="<?php echo $tglnow;?>" type=text class="form-control" id="tgl-awal-biaya" name="tgl-awal-biaya" data-zdp_readonly_element="false" required>
-            </div>
-            <div class="col-sm-3">
-            <input value="<?php echo $tglnow;?>" type=text class="form-control" id="tgl-akhir-biaya" name="tgl-akhir-biaya" data-zdp_readonly_element="false" required>
-            </div>
-            <div class="col-sm-2">
-            <button type="button" id="btn-proses-biaya" class="btn btn-info">PROSES<i class="fas fa-angle-double-right ml-2"></i></button>
-            </div>
-            <div class="col-sm-3 text-right">
-            <button id="tambah-biaya" type="button" class="btn btn-primary btn-tambah" data-toggle="modal" data-target="#modal-biaya">
-            <i class="fas fa-plus mr-2"></i>TAMBAH
-            </button>
-            </div>
-          </div>
+    <div class="container">
+      <div class="row">
+        <label for="tgl-awal-biaya" class="col-form-label">Periode</label>
+        <div class="col-sm-3">
+        <input value="<?php echo $tglnow;?>" type=text class="form-control" id="tgl-awal-biaya" name="tgl-awal-biaya" data-zdp_readonly_element="false" required>
+        </div>
+        <div class="col-sm-3">
+        <input value="<?php echo $tglnow;?>" type=text class="form-control" id="tgl-akhir-biaya" name="tgl-akhir-biaya" data-zdp_readonly_element="false" required>
+        </div>
+        <div class="col-sm-2">
+        <button type="button" id="btn-proses-biaya" class="btn btn-info">PROSES</button>
+        </div>
+        <div class="col-sm-3 text-right">
+        <button id="tambah-biaya" type="button" class="btn btn-primary btn-tambah" data-toggle="modal" data-target="#modal-biaya">
+        <i class="fas fa-plus mr-2"></i>TAMBAH
+        </button>
+        </div>
       </div>
     </div>
+      <br />
     <div class="card">
       <div class="card-body p-3">
         <div class="table-responsive">

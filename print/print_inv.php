@@ -13,6 +13,7 @@ $tgljtinv =($jual['cara_bayar']=='LUNAS') ? '-' : dmy($jual['tanggal_jatuh_tempo
 $disk_inv = ($jual['diskon']==0) ? '0' : $jual['diskon'];
 $kur_inv = ($jual['pengurangan']==0) ? '0' : money_simple($jual['pengurangan']);
 $ongkir_inv = ($jual['ongkir']==0) ? '0' : money_simple($jual['ongkir']);
+$diskon_rp = ($jual['diskon_rp']==0) ? '0' : money_simple($jual['diskon_rp']);
 $set = RpuKatalog::get_settings();
 ?>
 <!DOCTYPE html>
@@ -90,15 +91,15 @@ $set = RpuKatalog::get_settings();
         </div>
         <br />
         <div class="row invoice-info">
-        <div class="col-sm-2 invoice-col">
+<!--         <div class="col-sm-2 invoice-col">
         <address>
-          Bank : <?php echo $set['bank'];?><br>
-          No.Rek : <?php echo $set['no_rek'];?><br>
-          A.n : <?php echo $set['an_rek'];?><br>
-          NPWP : <?php echo $set['npwp'];?>
+          Bank : <?php //echo $set['bank'];?><br>
+          No.Rek : <?php //echo $set['no_rek'];?><br>
+          A.n : <?php //echo $set['an_rek'];?><br>
+          NPWP : <?php //echo $set['npwp'];?>
         </address>
-        </div>
-        <div class="col-sm-3 invoice-col ml-3">
+        </div> -->
+        <div class="col-sm-3 invoice-col">
             Keterangan
             <address>
             <?php echo trim($jual['keterangan']);?>
@@ -110,7 +111,10 @@ $set = RpuKatalog::get_settings();
         <div class="col-sm-2 invoice-col">
             <p>Penerima : </p>
         </div>
-        <div class="col-sm-3 invoice-col">
+        <div class="col-sm-2">
+           <p>&nbsp;</p>
+        </div>
+        <div class="col-sm-3 invoice-col text-right">
           <div class="table-responsive">
             <table class="table table-sm text-right no-border">
             <tr>
@@ -132,6 +136,10 @@ $set = RpuKatalog::get_settings();
              <tr>
                 <td>Diskon dalam <small>(Rp) (-)</small></td>
                 <td class="pr-3"><?php echo $kur_inv;?></td>
+            </tr>
+            <tr>
+                <td>Diskon Rp <small>(Rp) (-)</small></td>
+                <td class="pr-3"><?php echo $diskon_rp;?>
             </tr>
             <tr>
                 <td>Ongkos Kirim & Lain2 <small>(Rp)</small></td>

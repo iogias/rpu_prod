@@ -117,8 +117,8 @@ class RpuKatalog {
 
     public static function getAllProdukJoin($arg='99',$arg2='00'){
         $sql = "SELECT pr.id,pr.kode_produk,pr.nama,pr.nama_jual,qbeli.beli AS qty_beli,COALESCE(qjual.jual,0) AS qty_jual,
-                pr.harga_beli,pr.harga_jual,pr.hpp,pr.lainnya,kg.nama AS kategori,pr.status,
-                COALESCE((qbeli.beli-qjual.jual-pr.lainnya),qbeli.beli) AS stok_ready
+                pr.harga_beli,pr.harga_jual,pr.hpp,pr.lainnya,kg.nama AS kategori,pr.status
+
                 FROM
                 (SELECT SUM(b.produk_qty) AS beli,b.kode_produk FROM tb_pembelian_detail b GROUP BY b.kode_produk) AS qbeli
                 LEFT JOIN
@@ -313,6 +313,7 @@ class RpuKatalog {
                 alamat = '".$data['alamat']."',
                 telepon = '".$data['telepon']."',
                 tgl_daftar = '".$tg."',
+                customer_id='".$data['customer_id']."',
                 status = '".(int)$data['status']."'
                 WHERE id = '".(int)$data['id-outlet']."'";
 
@@ -322,6 +323,7 @@ class RpuKatalog {
                     'alamat'=>$data['alamat'],
                     'telepon'=>$data['telepon'],
                     'tgl_daftar'=>$tg,
+                    'customer_id'=>$data['customer_id'],
                     'status'=>$data['status']
                 );
         return DbHandler::cExecute($sql, $params);

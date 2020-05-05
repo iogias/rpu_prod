@@ -104,10 +104,11 @@ $gr=RpuKatalog::getAllCustomerJoinGroup();
             <div class="col-sm-5">
               <select class="form-control" name="customer_group_id" id="customer_group_id">
                 <?php
-                for ($j = 0; $j < count($gr); $j++) {
-                  $idc = $gr[$j]['id'];
+                $grc=RpuKatalog::getAll('tb_customergroup');
+                for ($j = 0; $j < count($grc); $j++) {
+                  $idc = $grc[$j]['id'];
                   ?>
-                  <option value="<?php echo $idc;?>"><?php echo $gr[$j]['nama'];?></option>
+                  <option value="<?php echo $idc;?>"><?php echo $grc[$j]['nama'];?></option>
                 <?php } ?>
               </select>
             </div>

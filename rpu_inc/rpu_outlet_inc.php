@@ -180,7 +180,7 @@ $(function () {
                 $('#alamat').val(data.alamat)
                 $('#telepon').val(data.telepon)
                 $('#tgl_daftar_i').val(data.tgl_daftar)
-                $('#customer_id').val(data.customer_id).prop('disabled',true)
+                $('#customer_id').val(data.customer_id)
                 $('#status').val(data.sts)
             })
         }

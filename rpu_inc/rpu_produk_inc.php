@@ -55,7 +55,7 @@ $kg=RpuKatalog::getAllKategoriProduk();
     <th class="text-center">Harga Beli</th>
     <th class="text-center">HPP</th>
     <th class="text-center">Harga Jual</th>
-    <th>Stok Ready</th>
+    <th class="text-center">Stok Ready</th>
     <th class="text-center">Terjual</th>
     <th class="text-center">Lainnya</th>
     <th class="text-center">Total</th>
@@ -395,8 +395,8 @@ $(function () {
                         { "data": "harga_jual","class":"text-right","render": function (data,type,row){
                                 return formatCurrency(data);
                             },},
-                        { "data": "stok_ready","class":"text-right text-primary","render":function (data,type,row){
-                                return formatCurrency(data);
+                        { "data": "qty_beli","class":"text-right text-primary","render":function (data,type,row){
+                                return stokReady(data,row.qty_jual,row.lainnya);
                             },},
                         { "data": "qty_jual","class":"text-right text-success",},
                         { "data": "lainnya","class":"text-right text-danger" },

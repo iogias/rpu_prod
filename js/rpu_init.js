@@ -159,7 +159,7 @@ function lunasButton(lunas,po,total){
     //let dis = ($po["cara_bayar"]=='LUNAS'||$po["status_bayar"]=='lunas')?'disabled':'enabled';
     let dis = (lunas=='Lunas')?'disabled':'enabled';
     let btncontrol = '<button type="button" data-total="'+total+'" data-toggle="modal" data-target="#modal-bayar" class="btn btn-primary btn-sm btn-bayar" id="'+po+'" '+dis+'>'+
-            '<i class="fas fa-handshake mr-2"></i>Bayar</button>'
+            'Bayar</button>'
     return btncontrol
 }
 
@@ -167,7 +167,7 @@ function lunasButtonInv(lunas,inv,total){
     //let dis = ($inv["cara_bayar"]=='LUNAS'||$inv["status_bayar"]=='lunas')?'disabled':'enabled';
     let dis = (lunas=='Lunas')?'disabled':'enabled';
     let btncontrol = '<button type="button" data-total-inv="'+total+'" data-toggle="modal" data-target="#modal-bayar-inv" class="btn btn-primary btn-sm btn-bayar-inv" id="'+inv+'" '+dis+'>'+
-            '<i class="fas fa-handshake mr-2"></i>Bayar</button>'
+            'Bayar</button>'
     return btncontrol
 }
 
@@ -195,17 +195,17 @@ function validAlphaNum(str){
     }
 }
 
-// function stokReady(stok,beli,jual,lain){
-//     let ss = 0
-//     jual = (jual==null||isNaN(jual)) ? '0' : jual
-//     lain = (lain==null||isNaN(lain)) ? '0' : lain
-//     if (stok == null) {
-//         ss = parseInt(beli) - parseInt(jual) - parseInt(lain)
-//     } else {
-//         ss = stok
-//     }
-//     return ss
-// }
+function stokReady(beli,jual,lain){
+    let ss = 0
+    jual = (jual==null||isNaN(jual)) ? '0' : jual
+    lain = (lain==null||isNaN(lain)) ? '0' : lain
+    //if (jual != null) {
+        ss = parseInt(beli) - parseInt(jual) - parseInt(lain)
+    //} else {
+        //ss = beli
+    //}
+    return formatCurrency(ss)
+}
 
 function getLinkInv(inv){
     if (inv!=''){

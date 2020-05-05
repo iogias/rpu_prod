@@ -76,6 +76,7 @@ class RpuPenjualan{
         $tgl_jt = ymd($data['tgl-jt-inv']);
         $subtotal_inv = to_int_koma($data['td-subtotal-inv']);
         $ongkir = to_int_koma($data['td-ongkir-inv']);
+        $diskon_rp = to_int_koma($data['td-diskon-rp']);
         $grand_total = to_int_koma($data['td-total-inv']);
         $kurang = to_int_koma($data['td-pengurangan-inv']);
         $keterangan=  filter_var($data['keterangan-inv'],FILTER_SANITIZE_STRING);
@@ -87,7 +88,7 @@ class RpuPenjualan{
                                 tanggal_order,cara_bayar,
                                 tanggal_jatuh_tempo,
                                 total_produk,total_berat,total_jumlah,
-                                grand_total,pengurangan,diskon,ongkir,
+                                grand_total,pengurangan,diskon,diskon_rp,ongkir,
                                 id_outlet,id_pembuat,id_sales,keterangan)
                     VALUES(NULL,
                     '".$data['nomor-inv']."',
@@ -103,6 +104,7 @@ class RpuPenjualan{
                     '".$grand_total."',
                     '".$kurang."',
                     '".$data['td-diskon-inv']."',
+                    '".$diskon_rp."',
                     '".$ongkir."',
                     '".$data['outlet-id']."',
                     '".$data['user-login-id']."',
@@ -121,6 +123,7 @@ class RpuPenjualan{
                     'grand_total'=>$grand_total,
                     'pengurangan'=>$kurang,
                     'diskon'=>$data['td-diskon-inv'],
+                    'diskon_rp'=>$diskon_rp,
                     'ongkir'=>$ongkir,
                     'id_outlet'=>$data['outlet-id'],
                     'id_pembuat'=>$data['user-login-id'],
@@ -164,6 +167,7 @@ class RpuPenjualan{
         $subtotal_inv = to_int_koma($data['td-subtotal-inv']);
         $ongkir = to_int_koma($data['td-ongkir-inv']);
         $grand_total = to_int_koma($data['td-total-inv']);
+        $diskon_rp = to_int_koma($data['td-diskon-rp']);
         $kurang = to_int_koma($data['td-pengurangan-inv']);
         $keterangan=  filter_var($data['keterangan-inv'],FILTER_SANITIZE_STRING);
         $keterangan = trim($keterangan);
@@ -178,6 +182,7 @@ class RpuPenjualan{
                     grand_total='".$grand_total."',
                     pengurangan='".$kurang."',
                     diskon='".$data['td-diskon-inv']."',
+                    diskon_rp='".$diskon_rp."',
                     ongkir='".$ongkir."',
                     id_outlet='".$data['outlet-id']."',
                     id_pembuat='".$data['user-login-id']."',
@@ -194,6 +199,7 @@ class RpuPenjualan{
                     'grand_total'=>$grand_total,
                     'pengurangan'=>$kurang,
                     'diskon'=>$data['td-diskon-inv'],
+                    'diskon_rp'=>$diskon_rp,
                     'ongkir'=>$ongkir,
                     'id_outlet'=>$data['outlet-id'],
                     'id_pembuat'=>$data['user-login-id'],
