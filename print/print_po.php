@@ -1,10 +1,17 @@
 <?php
+require_once '../libs/config.php';
 if (!isset($_GET['nomorpo']) || $_GET['nomorpo'] =='') {
    die ('Parameter tidak ditemukan');
+} else if(isset($_GET['nomorpo'])){
+  $po=$_GET['nomorpo'];
+  $poex = RpuPembelian::get_po($po);
+  if(!$poex){
+    die ('PO belum disimpan, harap disimpan dahulu');
+  }
+
 } else {
     $po=$_GET['nomorpo'];
 }
-require_once '../libs/config.php';
 $beli = RpuPembelian::get_po($po);
 $tgl_buat = ($beli['tanggal_pembuatan']=='') ? $tglnow : dmy($beli['tanggal_pembuatan']);
 $username = ($beli['staff_buat']=='') ? $session_us : $beli['staff_buat'];

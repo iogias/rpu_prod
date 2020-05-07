@@ -1,10 +1,17 @@
 <?php
+require_once '../libs/config.php';
 if (!isset($_GET['nomorinv']) || $_GET['nomorinv'] =='') {
     die ('Parameter tidak ditemukan');
+} else if(isset($_GET['nomorinv'])){
+  $inv=$_GET['nomorinv'];
+  $invp = RpuPenjualan::get_inv($inv);
+  if(!$invp){
+    die ('INVOICE belum disimpan, harap disimpan dahulu');
+  }
 } else {
     $inv=$_GET['nomorinv'];
 }
-require_once '../libs/config.php';
+
 $jual = RpuPenjualan::get_inv($inv);
 $tglbuatinv = ($jual['tanggal_pembuatan']=='') ? $tglnow : dmy($jual['tanggal_pembuatan']);
 $username = ($jual['nstaff']=='') ? $session_us : $jual['nstaff'];
@@ -111,42 +118,42 @@ $set = RpuKatalog::get_settings();
         <div class="col-sm-2 invoice-col">
             <p>Penerima : </p>
         </div>
-        <div class="col-sm-2">
+        <div class="col-sm-1">
            <p>&nbsp;</p>
         </div>
-        <div class="col-sm-3 invoice-col text-right">
+        <div class="col-sm-4 invoice-col text-right">
           <div class="table-responsive">
             <table class="table table-sm text-right no-border">
             <tr>
-                <td style="width:60%">Total Item <small>(pcs)</small></td>
+                <td class="pr-3" style="width:70%">Total Item <small>(pcs)</small></td>
                 <td class="pr-3"><?php echo $jual['total_produk'];?></td>
             </tr>
             <tr>
-                <td>Total Berat <small>(kg)</small></td>
+                <td class="pr-3">Total Berat <small>(kg)</small></td>
                 <td class="pr-3"><?php echo $jual['total_berat'];?></td>
             </tr>
             <tr>
-                <td>Subtotal <small>(Rp)</small></td>
+                <td class="pr-3">Subtotal <small>(Rp)</small></td>
                 <td class="pr-3"><?php echo money_simple($jual['total_jumlah']);?></td>
             </tr>
             <tr>
-                <td>Diskon <small>(%)</small></td>
+                <td class="pr-3">Diskon <small>(%)</small></td>
                 <td class="pr-3"><?php echo $disk_inv;?>
             </tr>
              <tr>
-                <td><small>(Rp) (-)</small></td>
+                <td class="pr-3"><small>(Rp) (-)</small></td>
                 <td class="pr-3"><?php echo $kur_inv;?></td>
             </tr>
             <tr>
-                <td>Diskon Rp <small>(Rp) (-)</small></td>
+                <td class="pr-3">Diskon Rp <small>(Rp) (-)</small></td>
                 <td class="pr-3"><?php echo $diskon_rp;?>
             </tr>
             <tr>
-                <td>Ongkos Kirim & Lain2 <small>(Rp)</small></td>
+                <td class="pr-3">Ongkos Kirim & Lain2 <small>(Rp)</small></td>
                 <td class="pr-3"><?php echo $ongkir_inv;?></td>
             </tr>
             <tr>
-                <td>Total Bayar <small>(Rp)</small></td>
+                <td class="pr-3">Total Bayar <small>(Rp)</small></td>
                 <td class="pr-3"><?php echo money_simple($jual['grand_total']);?>
             </tr>
             </table>

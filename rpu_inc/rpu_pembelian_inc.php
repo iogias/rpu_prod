@@ -792,7 +792,7 @@ $(function(){
         let fail = false
         let fail_log = ''
         let name
-        let msg = (token=='simpan-po') ? 'SUKSES SIMPAN DATA!' : 'SUKSES UPDATE DATA!'
+        let msg = (token=='new-po') ? 'SUKSES SIMPAN DATA!' : 'SUKSES UPDATE DATA!'
 
         form.find('input').each(function(){
              if(!$(this).prop('required')){
