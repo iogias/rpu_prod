@@ -158,7 +158,27 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
     }
     $res = array("data"=>$data);
     echo json_encode($res);
-}
-else {
+} else if (isset($_POST['token']) && $_POST['token']=='stok'){
+    // $awal = ymd($_POST['awal']);
+    // $akhir = ymd($_POST['akhir']);
+    $rows=RpuKatalog::getAllStokProdukInContainer();
+    echo json_encode($rows);
+} else if (isset($_POST['token']) && $_POST['token']=='container'){
+    $rows=RpuKatalog::getAll('tb_container');
+    $data = array();
+    foreach ($rows as $container) {
+        $sub=array();
+        $sub[] = '<div class="text-center">'.$container["id"].'</div>';
+        $sub[] = '<div contenteditable class="text-center update-fr" data-column="'.$container["nama"].'" data-id="'.$container["id"].'">'.$container["nama"].'</div>';
+        $sub[]='<div class="text-right">
+                <button type="button" class="btn-del-fr btn btn-danger btn-sm" title="Hapus freezer" data-id="'.$container["id"].'">
+                <i class="fas fa-trash-alt"></i></button>
+                </div>';
+        $data[]=$sub;
+    }
+    $res = array("data"=>$data);
+    echo json_encode($res);
+
+} else {
     die('NO DATA PASSED');
 }

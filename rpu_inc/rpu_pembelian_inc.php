@@ -89,6 +89,11 @@ $ongkir = ($beli['ongkir']==0) ? '' : money_simple($beli['ongkir']);
                 </div>
                 <div class="col-sm-2">
                     <label for="cara_bayar" class="col-form-label"><i class="fas fa-angle-right text-danger mr-2"></i>Status Bayar</label>
+                   <!--  <select id="cara-bayar" name="cara-bayar" class="form-control form-po">
+                        <option value="">PILIH</option>
+                        <option value="LUNAS">LUNAS</option>
+                        <option value="TEMPO">TEMPO</option>
+                    </select> -->
                     <input list="cara-bayar" name="cara-bayar" class="form-control form-po" value="<?php echo $beli['cara_bayar'];?>" required>
                     <datalist id="cara-bayar">
                         <option value="LUNAS" />
@@ -167,6 +172,7 @@ $ongkir = ($beli['ongkir']==0) ? '' : money_simple($beli['ongkir']);
                     <td>
                         <input value="<?php echo desimal($produk[$nn]['subtotal_berat']);?>" type="text" class="form-control-plaintext p-0 m-0 text-right" name="det-td-subtot-kg" id="td-subtotkg-<?php echo $nn;?>" placeholder="R" readonly />
                     </td>
+
                     <td class="pl-3">
                         <?php $per = ($produk[$nn]['per']=='') ? 'QTY' : $produk[$nn]['per'];?>
                         <input value="<?php echo $per;?>" list="td-perkalian-<?php echo $nn;?>" id="tdl-perkalian-<?php echo $nn;?>" name="det-td-perkalian" class="form-control-plaintext p-0 m-0 form-po perkalian text-center" />

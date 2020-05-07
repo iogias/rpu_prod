@@ -213,7 +213,7 @@ $diskon_rp = ($jual['diskon_rp']==0) ? '' : money_simple($jual['diskon_rp']);
                         </td>
                     </tr>
                     <tr>
-                        <th>Diskon dalam <small>(Rp) (-)</small></th>
+                        <th><small>(Rp) (-)</small></th>
                         <td class="pr-3">
                         <input value="<?php echo $kur_inv;?>" placeholder="0" type="text" class="extra-input-inv form-control-plaintext p-0 m-0 text-right form-inv format-uang" name="td-pengurangan-inv" id="td-pengurangan-inv" readonly />
                         </td>

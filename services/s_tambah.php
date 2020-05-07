@@ -112,6 +112,22 @@ if (isset($_POST['token']) && $_POST['token']=='new_supplier'){
     if ($nama){
         echo '{"status":true,"nama":"'.$nama.'"}';
     }
-} else {
+}  else if(isset($_POST['token']) && $_POST['token']=='frezzer'){
+    $idf = $_POST['idf'];
+    $nama = $_POST['nama'];
+    RpuKatalog::new_frezzer($idf,$nama);
+    $sql="SELECT nama FROM tb_container ORDER BY id DESC LIMIT 1";
+    $nama =  DbHandler::getOne($sql);
+    if ($nama){
+        echo '{"status":true}';
+    }
+} else if(isset($_POST['token']) && $_POST['token']=='produk_frezzer'){
+    $idf = $_POST['idf'];
+    $idp = $_POST['idp'];
+    $qty = $_POST['qty'];
+    RpuKatalog::insert_frezzer($idf,$idp,$qty);
+    echo '{"status":true}';
+}
+else {
     die ('NO DATA PASSED');
 }

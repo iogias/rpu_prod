@@ -26,6 +26,11 @@ class RpuKatalog {
         return DbHandler::getAll($sql,$param);
     }
 
+    public static function getLastId($table){
+        $sql = "SELECT MAX(id) FROM $table";
+        return DbHandler::getOne($sql);
+    }
+
     public static function getAllOutletJoinCustomer($arg='99'){
         $sql = "SELECT c.*,cg.nama AS nama_g FROM tb_outlet c JOIN tb_customer cg ON cg.id=c.customer_id\n";
         if($arg!='99'){
@@ -117,8 +122,8 @@ class RpuKatalog {
 
     public static function getAllProdukJoin($arg='99',$arg2='00'){
         $sql = "SELECT pr.id,pr.kode_produk,pr.nama,pr.nama_jual,qbeli.beli AS qty_beli,COALESCE(qjual.jual,0) AS qty_jual,
-                pr.harga_beli,pr.harga_jual,pr.hpp,pr.lainnya,kg.nama AS kategori,pr.status
-
+                pr.harga_beli,pr.harga_jual,pr.hpp,pr.lainnya,kg.nama AS kategori,pr.status,
+                (qbeli.beli-COALESCE(qjual.jual,0)-COALESCE(pr.lainnya,0)) AS stok_ready
                 FROM
                 (SELECT SUM(b.produk_qty) AS beli,b.kode_produk FROM tb_pembelian_detail b GROUP BY b.kode_produk) AS qbeli
                 LEFT JOIN
@@ -623,6 +628,28 @@ class RpuKatalog {
         return DbHandler::getAll($sql);
     }
 
+    public static function new_frezzer($id,$nm) {
+        $nama = strtoupper($nm);
+        $sql = "INSERT INTO tb_container(id,nama)
+            VALUES('".$id."','".$nama."')";
+        $params = array(
+                    'id'=>$id,
+                    'nama'=>$nama
+                );
+        return DbHandler::cExecute($sql, $params);
+    }
+
+    public static function insert_frezzer($idf,$idp,$qty) {
+        $sql = "INSERT INTO tb_container_to_produk(id_frezzer,kode_produk,jumlah)
+            VALUES('".$idf."','".$idp."','".$qty."')";
+        $params = array(
+                    'id_frezzer'=>$idf,
+                    'kode_produk'=>$idp,
+                    'jumlah'=>$qty
+                );
+        return DbHandler::cExecute($sql, $params);
+    }
+
     public static function new_jenis_biaya($data) {
         $nama = ucfirst($data['nama-jb']);
         $sql = "INSERT INTO tb_jenis_biaya(id,nama,status,kode_kategori)
@@ -722,6 +749,57 @@ class RpuKatalog {
         return DbHandler::getAll($sql,$params);
     }
 
+    public static function getAllStokProdukInContainer(){
+        $sql = "SELECT s.id,c.nama AS nama_frezzer,p.nama_jual AS nama_produk,SUM(s.jumlah) AS jumlah,s.kode_produk,s.id_frezzer
+                FROM tb_container_to_produk s
+                JOIN tb_container c ON c.id=s.id_frezzer
+                JOIN tb_produk p ON p.kode_produk=s.kode_produk
+                GROUP BY s.kode_produk";
+        //$param = array('tanggal'=>$awal,'tanggal'=>$akhir);
+        return DbHandler::getAll($sql);
+    }
+
+    public static function getAllStokProdukInContainerbyId($id){
+        $sql = "SELECT s.id,c.nama AS nama_frezzer,p.nama_jual AS nama_produk,SUM(s.jumlah) AS jumlah,s.kode_produk,s.id_frezzer
+                FROM tb_container_to_produk s
+                JOIN tb_container c ON c.id=s.id_frezzer
+                JOIN tb_produk p ON p.kode_produk=s.kode_produk
+                WHERE s.id='".$id."'
+                GROUP BY s.kode_produk";
+        $param = array('id'=>$id);
+        return DbHandler::getRow($sql,$param);
+    }
+
+    public static function update_frezzer($id,$nama){
+        $nama = strtoupper($nama);
+        $sql = "UPDATE tb_container
+                SET nama='".$nama."'
+                WHERE id='".$id."'";
+        $params = array(
+            'id'=>$id,
+            'nama'=>$nama
+            );
+        return DbHandler::cExecute($sql,$params);
+    }
+
+    public static function produk_on_frezzer($id){
+        $sql = "SELECT SUM(jumlah) AS jumlah FROM tb_container_to_produk WHERE kode_produk='".$id."'";
+        $param = array('kode_produk'=>$id);
+        return DbHandler::getOne($sql,$param);
+    }
+
+    public static function updateProdukInContainer($id,$idf,$idp,$qty){
+        $sql = "UPDATE tb_container_to_produk
+                SET id_frezzer='".$idf."',kode_produk='".$idp."',jumlah='".$qty."'
+                WHERE id='".$id."'";
+        $params = array(
+            'id'=>$id,
+            'id_frezzer'=>$idf,
+            'kode_produk'=>$idp,
+            'jumlah'=>$qty
+            );
+        return DbHandler::cExecute($sql,$params);
+    }
 
 
 }

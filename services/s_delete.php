@@ -42,6 +42,11 @@ if (isset($_POST['token']) && $_POST['token']=='kategoriproduk'){
         RpuKatalog::delRowById('tb_user',$idu);
     }
     echo '{"status":true}';
+} else if (isset($_POST['token']) && $_POST['token']=='container'){
+    $id = (int) $_POST['idr'];
+    $table = 'tb_'.$_POST['token'];
+    RpuKatalog::delRowById($table,$id);
+    echo '{"status":true}';
 } else {
     die('NO DATA PASSED');
 }

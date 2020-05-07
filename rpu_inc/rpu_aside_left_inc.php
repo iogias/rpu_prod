@@ -87,6 +87,12 @@ if (!defined('WEB_ROOT')) {
               <p>Produk</p>
             </a>
           </li>
+          <li class="nav-item">
+            <a id="get_rpu_stok" href="#" class="nav-link a-link-menu-nav">
+              <i class="nav-icon fas fa-box"></i>
+              <p>Stok</p>
+            </a>
+          </li>
           <li class="nav-header pt-1">LAPORAN</li>
           <li class="nav-item has-treeview">
             <a href="#" class="nav-link">

@@ -153,6 +153,22 @@ if (isset($_POST['token']) && $_POST['token']=='kategoriproduk'){
     $dt = $_POST['data'];
     $jbi=RpuKatalog::getAllJbbyKode($dt);
     echo json_encode($jbi);
+} else if (isset($_POST['token']) && $_POST['token']=='stok'){
+    $idr = $_POST['idr'];
+    $nama = $_POST['nama'];
+    RpuKatalog::update_frezzer($idr,$nama);
+    echo '{"status":true}';
+} else if (isset($_POST['token']) && $_POST['token']=='p_frezzer'){
+    $id = $_POST['id'];
+    $row = RpuKatalog::getAllStokProdukInContainerbyId($id);
+    echo '{"status":true,"row":'.json_encode($row).'}';
+} else if (isset($_POST['token']) && $_POST['token']=='update_pr_frezzer'){
+    $id = $_POST['id'];
+    $idf = $_POST['idf'];
+    $idp = $_POST['idp'];
+    $qty = $_POST['qty'];
+    RpuKatalog::updateProdukInContainer($id,$idf,$idp,$qty);
+    echo '{"status":true}';
 } else {
     die ('NO DATA PASSED');
 }

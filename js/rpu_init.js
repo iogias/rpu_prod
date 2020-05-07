@@ -184,6 +184,12 @@ function edButtonProduk(id){
     return btn
 }
 
+function edButtonProdukFr(id){
+    let btn = '<button type="button" class="btn btn-warning btn-sm edit-produk-fr" id="'+id+'">'
+        btn +='<i class="fas fa-pencil-alt"></i></button>'
+    return btn
+}
+
 function titlePrint(){
     let awal = $(document).find('input#tgl-awal').val()
     return awal

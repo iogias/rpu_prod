@@ -134,7 +134,7 @@ $set = RpuKatalog::get_settings();
                 <td class="pr-3"><?php echo $disk_inv;?>
             </tr>
              <tr>
-                <td>Diskon dalam <small>(Rp) (-)</small></td>
+                <td><small>(Rp) (-)</small></td>
                 <td class="pr-3"><?php echo $kur_inv;?></td>
             </tr>
             <tr>
