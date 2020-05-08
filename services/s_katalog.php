@@ -109,6 +109,9 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
     $param2 = $_POST['arg2'];
     $produk=RpuKatalog::getAllProdukJoin($param,$param2);
     echo json_encode($produk);
+}else if(isset($_POST['token']) && $_POST['token']=='produk_2'){
+    $produk=RpuKatalog::getAllProdukJoin2();
+    echo json_encode($produk);
 } else if(isset($_POST['token']) && $_POST['token']=='customergroup'){
     $arg = $_POST['token'];
     $param = $_POST['args'];

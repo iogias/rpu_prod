@@ -282,9 +282,8 @@ $ongkir = ($beli['ongkir']==0) ? '' : money_simple($beli['ongkir']);
                 <th width="10%">Kode</th>
                 <th>Nama</th>
                 <th width="15%" class="text-center">Harga Beli</th>
-                <th width="15%" class="text-center">Stok Ready</th>
                 <th width="15%">Kategori</th>
-                <th width="6%">Status</th>
+                <th width="20%">Status</th>
             </tr>
         </thead>
     </table>
@@ -446,6 +445,25 @@ $(function(){
         }
         if (query.length==0){
             $('#list-'+id).css('display','none')
+        }
+    })
+
+    $('#nama-staff').blur(function(e){
+        e.preventDefault()
+        //let id = $(this).attr('id').replace('nama-','')
+        let query = $(this).val()
+        if (query.length>0){
+            $.post(service_url+'s_search.php',{
+                    token:'cek_exist',
+                    table:'staff',
+                    query:query
+                },
+                function(data){
+                    // $('#list-'+id).html(data)
+                    if(data.status==false){
+                        toastr.error('NAMA STAFF BELUM TERDAFTAR, HARAP DIDAFTAR DAHULU')
+                    }
+                },'json')
         }
     })
 
@@ -673,6 +691,24 @@ $(function(){
         update_nilai()
     })
 
+    $(document).on('change', '.select-sts', function(e) {
+        let kode=$(this).data('id')
+        let sts = $(this).val()
+        $.post(service_url+'s_update.php',{
+              token:'update_sts_produk',
+              kode:kode,
+              sts:sts
+            },function(data){
+                if (data.status==true){
+                  toastr.success('SUKSES UPDATE DATA!')
+                  $('#tb-produk-po').DataTable().destroy()
+                  fetch_produk()
+                 } else{
+                  toastr.error('ERROR INPUT DATA!')
+                 }
+            },'json')
+    })
+
     $(document).on('click','#btn-simpan-po',function(e){
       e.preventDefault()
       simpan_update('simpan-po')
@@ -891,16 +927,12 @@ $(function(){
         return obj
     }
 
-    function fetch_produk(arg='99',arg2='00') {
+    function fetch_produk() {
         $.ajax({
                 url: service_url+'s_katalog.php',
                 method: 'POST',
                 dataType: 'json',
-                data:{
-                        token:'produk',
-                        arg:arg,
-                        arg2:arg2
-                }
+                data:{token:'produk_2'}
             }).done(function(data){
                 let tb = $('#tb-produk-po').DataTable({
                     //dom:'<"row"<"col-sm-12 col-md-6"B><"col-sm-12 col-md-6"f>>t<"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6"p>>',
@@ -930,12 +962,9 @@ $(function(){
                         { "data": "harga_beli","class":"text-right","render": function (data,type,row){
                                 return formatCurrency(data);
                             },},
-                        { "data": "qty_beli","class":"text-right",function (data,type,row){
-                                return stokReady(data,row.qty_jual,row.lainnya);
-                            },},
                         { "data": "kategori","class":"pl-3" },
                         { "data": "status","class":"text-center","render":function(data,type,row){
-                                    return statusBadge(data)
+                                    return dropBadge(data,row.id)
                             },},
                     ],
                 });

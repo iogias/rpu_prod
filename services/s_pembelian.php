@@ -23,11 +23,10 @@ if (isset($_POST['token']) && $_POST['token'] == 'pembelian') {
         foreach($items as $value){
             RpuPembelian::insert_po_detail($po,$value);
         }
-        // foreach($items as $value){
-        //     RpuKatalog::update_stok_produk($value);
-        // }
         $_SESSION['pembelian'] = '';
         echo '{"status":true}';
+    } else {
+        echo '{"status":false}';
     }
 } else if (isset($_POST['token']) && $_POST['token'] == 'update_po'){
     $dt = $_POST['data'];

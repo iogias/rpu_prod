@@ -441,6 +441,25 @@ $(function(){
         }
     })
 
+    $('#nama-staff').blur(function(e){
+        e.preventDefault()
+        //let id = $(this).attr('id').replace('nama-','')
+        let query = $(this).val()
+        if (query.length>0){
+            $.post(service_url+'s_search.php',{
+                    token:'cek_exist',
+                    table:'staff',
+                    query:query
+                },
+                function(data){
+                    // $('#list-'+id).html(data)
+                    if(data.status==false){
+                        toastr.error('NAMA STAFF BELUM TERDAFTAR, HARAP DIDAFTAR DAHULU')
+                    }
+                },'json')
+        }
+    })
+
     $(document).on('click','.gsearch',function(e){
         e.preventDefault()
         let nama = $(this).text()

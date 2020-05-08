@@ -25,6 +25,7 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
             <a href="javascript:void(0)" class="gsearch nav-link" id="staff-'.$id.'">'.$row["nama"].'</a></li>';
     }
     echo $data;
+
  } else if (isset($_POST['token']) && $_POST['token']=='outlet'){
     $key = trim($_POST['query']);
     $keyword = strtoupper($key);
@@ -91,4 +92,13 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
         $data .= '<li class="list-group-item contsearch"><a href="javascript:void(0)" class="inv-search nav-link">'.$id.'</a></li>';
     }
     echo $data;
+} else if (isset($_POST['token']) && $_POST['token']=='cek_exist'){
+    $key = trim($_POST['query']);
+    $table = "tb_".$_POST['table'];
+    $row=RpuKatalog::getNameOnTable($table,$key);
+    if($row){
+        echo '{"status":true}';
+    } else {
+        echo '{"status":false}';
+    }
 }

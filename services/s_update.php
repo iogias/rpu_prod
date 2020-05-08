@@ -169,6 +169,11 @@ if (isset($_POST['token']) && $_POST['token']=='kategoriproduk'){
     $qty = $_POST['qty'];
     RpuKatalog::updateProdukInContainer($id,$idf,$idp,$qty);
     echo '{"status":true}';
+} else if (isset($_POST['token']) && $_POST['token']=='update_sts_produk'){
+    $id = $_POST['kode'];
+    $sts = $_POST['sts'];
+    RpuKatalog::update_sts_produk($id,$sts);
+    echo '{"status":true}';
 } else {
     die ('NO DATA PASSED');
 }

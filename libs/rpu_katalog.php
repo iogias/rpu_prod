@@ -146,6 +146,14 @@ class RpuKatalog {
         return DbHandler::getAll($sql,$params);
     }
 
+    public static function getAllProdukJoin2(){
+        $sql = "SELECT pr.id,pr.kode_produk,pr.nama,pr.nama_jual,pr.harga_beli,pr.status,kg.nama AS kategori
+                FROM tb_produk pr
+                JOIN tb_kategori_produk kg ON kg.id=pr.kategoriproduk_id ORDER BY pr.nama ASC";
+        //$params = array('status'=>$arg,'kategoriproduk_id'=>$arg2);
+        return DbHandler::getAll($sql);
+    }
+
     public static function getAllProdukJoinById($id){
         $sql = "SELECT p.id,p.kode_produk,p.nama,p.nama_jual,p.harga_beli,p.hpp,p.kategoriproduk_id,
                 p.harga_jual,p.lainnya,p.status,s.nama AS supplier,k.nama AS kategori\n";
@@ -464,6 +472,17 @@ class RpuKatalog {
                     'hpp'=>$hpp,
                     'kategoriproduk_id'=>$data['kategoriproduk-id'],
                     'status'=>$data['status']
+                );
+        return DbHandler::cExecute($sql, $params);
+    }
+
+    public static function update_sts_produk($id,$sts) {
+        $sql = "UPDATE tb_produk SET
+                status = '".$sts."'
+                WHERE id = '".$id."'";
+        $params = array(
+                    'id'=>$id,
+                    'status'=>$sts
                 );
         return DbHandler::cExecute($sql, $params);
     }
@@ -801,5 +820,10 @@ class RpuKatalog {
         return DbHandler::cExecute($sql,$params);
     }
 
+    public static function getNameOnTable($table,$key){
+        $sql = "SELECT nama FROM $table WHERE nama='".$key."'";
+        $param = array('nama' => $key);
+        return DbHandler::getOne($sql,$param);
+    }
 
 }

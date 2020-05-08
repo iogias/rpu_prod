@@ -150,6 +150,23 @@ function statusBadge(sts){
     return status
 }
 
+function dropBadge(sts,id){
+    let htm = '<select class="form-control-plaintext p-0 select-sts" name="status-pr" data-id='+id+'>'
+    if (sts==1){
+        htm +='<option value="1" selected>Aktif</option>'
+        htm +='<option value="0">Non-Aktif</option>'
+    } else {
+        htm +='<option value="1">Aktif</option>'
+        htm +='<option value="0" selected>Non-Aktif</option>'
+    }
+    // let slct = (sts=='1')?'true':'false'
+    // let htm = '<select class="form-control-plaintext p-0 select-sts" name="status-pr" data-id='+id+'>'
+    // htm +='<option value="1" selected='+slct+'>Aktif</option>'
+    // htm +='<option value="0" selected='+slct+'>Non-Aktif</option>'
+    htm +='</select>'
+    return htm
+}
+
 function lunasBadge(lunas){
     let status_lunas = (lunas=='Lunas')?'<span class="badge badge-success">Lunas</span>':'<span class="badge badge-danger">Belum</span>';
     return status_lunas
