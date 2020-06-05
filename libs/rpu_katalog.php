@@ -122,10 +122,10 @@ class RpuKatalog {
 
     public static function getAllProdukJoin($arg='99',$arg2='00'){
         $sql = "SELECT pr.id,pr.kode_produk,pr.nama,pr.nama_jual,qbeli.beli AS qty_beli,COALESCE(qjual.jual,0) AS qty_jual,
-                pr.harga_beli,pr.harga_jual,pr.hpp,pr.lainnya,kg.nama AS kategori,pr.status,
+                qbeli.harga_beli,pr.harga_jual,pr.hpp,pr.lainnya,kg.nama AS kategori,pr.status,qbeli.nomor_po,
                 (qbeli.beli-COALESCE(qjual.jual,0)-COALESCE(pr.lainnya,0)) AS stok_ready
                 FROM
-                (SELECT SUM(b.produk_qty) AS beli,b.kode_produk FROM tb_pembelian_detail b GROUP BY b.kode_produk) AS qbeli
+                (SELECT SUM(b.produk_qty) AS beli,b.kode_produk,b.harga_beli,b.nomor_po FROM tb_pembelian_detail b GROUP BY b.kode_produk) AS qbeli
                 LEFT JOIN
                 (SELECT SUM(COALESCE(j.produk_qty,0)) AS jual,j.kode_produk FROM tb_penjualan_detail j GROUP BY j.kode_produk) AS qjual
                 ON qbeli.kode_produk=qjual.kode_produk
@@ -155,7 +155,7 @@ class RpuKatalog {
     }
 
     public static function getAllProdukJoinById($id){
-        $sql = "SELECT p.id,p.kode_produk,p.nama,p.nama_jual,p.harga_beli,p.hpp,p.kategoriproduk_id,
+        $sql = "SELECT p.id,p.kode_produk,p.nama,p.nama_jual,d.harga_beli,p.hpp,p.kategoriproduk_id,
                 p.harga_jual,p.lainnya,p.status,s.nama AS supplier,k.nama AS kategori\n";
         $sql .= "FROM tb_produk p JOIN tb_pembelian_detail d ON d.kode_produk=p.kode_produk\n";
         $sql .= "LEFT JOIN tb_kategori_produk k ON k.id=p.kategoriproduk_id\n";
@@ -450,8 +450,9 @@ class RpuKatalog {
         $nama = strtoupper($data['nama-jual']);
         $harga = to_int_koma($data['harga-jual']);
         $hpp = to_int_koma($data['hpp']);
+        $tambah = ($data['stok-lain-tambah']=='')?0:$data['stok-lain-tambah'];
         $row = self::cek_stok_produk($data['kode']);
-        $lainnya = $row['lainnya']+$data['stok-lain-tambah'];
+        $lainnya = $row['lainnya']+$tambah;
         $sql = "UPDATE tb_produk
                 SET nama_jual='".$nama."',
                 harga_jual ='".$harga."',
@@ -574,12 +575,12 @@ class RpuKatalog {
     }
 
     public static function getAllBiayaSum($awal,$akhir){
-        $sql = "SELECT SUM(b.nominal) AS nominal,j.nama AS nama,b.kode_kategori
+        $sql = "SELECT SUM(COALESCE(b.nominal,0)) AS nominal,j.nama AS nama,b.kode_kategori
                 FROM tb_biaya b
                 JOIN tb_jenis_biaya j ON j.id=b.jenis_id
                 WHERE b.kode_kategori<>'BV' AND b.tanggal BETWEEN '".$awal."' AND '".$akhir."'
                 GROUP BY b.jenis_id";
-        $param = array('tanggal'=>$awal,'tanggal'=>$akhir);
+        $param = array('tanggal'=>$awal);
         return DbHandler::getAll($sql,$param);
     }
 
@@ -685,7 +686,7 @@ class RpuKatalog {
     }
 
     public static function get_totalan_biaya($awal,$akhir){
-        $sql = "SELECT SUM(nominal) AS total
+        $sql = "SELECT SUM(COALESCE(nominal,0)) AS total
                 FROM tb_biaya
                 WHERE kode_kategori<>'BV' AND tanggal BETWEEN '".$awal."' AND '".$akhir."'";
         $param = array('tanggal' => $awal,'tanggal'=>$akhir);
@@ -693,7 +694,7 @@ class RpuKatalog {
     }
 
     public static function get_all_totalan_biaya($awal,$akhir){
-        $sql = "SELECT SUM(nominal) AS nominal, COUNT(id) AS countr
+        $sql = "SELECT SUM(COALESCE(nominal,0)) AS nominal, COUNT(id) AS countr
                 FROM tb_biaya
                 WHERE tanggal BETWEEN '".$awal."' AND '".$akhir."'";
         $param = array('tanggal' => $awal,'tanggal'=>$akhir);
@@ -701,7 +702,7 @@ class RpuKatalog {
     }
 
     public static function get_totalan_bv($awal,$akhir){
-        $sql = "SELECT SUM(nominal) AS total
+        $sql = "SELECT SUM(COALESCE(nominal,0)) AS total
                 FROM tb_biaya
                 WHERE kode_kategori='BV' AND tanggal BETWEEN '".$awal."' AND '".$akhir."'";
         $param = array('tanggal' => $awal,'tanggal'=>$akhir);
@@ -709,7 +710,7 @@ class RpuKatalog {
     }
 
     public static function get_total_bv($awal,$akhir){
-        $sql = "SELECT SUM(b.nominal) AS nominal,j.nama AS nama,b.kode_kategori
+        $sql = "SELECT SUM(COALESCE(b.nominal,0)) AS nominal,j.nama AS nama,b.kode_kategori
                 FROM tb_biaya b
                 JOIN tb_jenis_biaya j ON j.id=b.jenis_id
                 WHERE b.kode_kategori='BV' AND b.tanggal BETWEEN '".$awal."' AND '".$akhir."'

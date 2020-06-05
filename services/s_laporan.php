@@ -53,19 +53,36 @@ if (isset($_POST['token']) && $_POST['token']=='lap_pembelian'){
     $akhir = ymd($_POST['akhir']);
     $jual_bersih = RpuPenjualan::get_totalan_inv($awal,$akhir);
     $jual_kotor = RpuPenjualan::get_penjualan_kotor($awal,$akhir);
+    $bb = 0;
+    $bv = 0;
+    $tb = 0;
+    $tbv = 0;
+
     $biaya = RpuKatalog::getAllBiayaSum($awal,$akhir);
+    if(!$biaya){
+        $biaya['nominal']=0;
+    }
     $biaya_variabel = RpuKatalog::get_total_bv($awal,$akhir);
+    if($biaya_variabel){
+        $bv = $biaya_variabel['nominal'];
+    }
     $total_biaya = RpuKatalog::get_totalan_biaya($awal,$akhir);
+    if($total_biaya['total']!=NULL){
+        $tb = $total_biaya['total'];
+    }
     $total_bv = RpuKatalog::get_totalan_bv($awal,$akhir);
+    if($total_bv['total']!=NULL){
+        $tbv = $total_bv['total'];
+    }
     $item_terjual = RpuKatalog::get_total_perproduk_laku($awal,$akhir);
     //$untung = RpuKatalog::get_total_produk_laku($awal,$akhir);
     echo '{
-    "total_bv":'.json_encode($total_bv).',
-    "total_biaya":'.json_encode($total_biaya).',
+    "total_bv":'.json_encode($tbv).',
+    "total_biaya":'.json_encode($tb).',
     "biaya":'.json_encode($biaya).',
     "jual_kotor":'.json_encode($jual_kotor).',
     "jual_bersih":'.json_encode($jual_bersih).',
-    "biayav":'.json_encode($biaya_variabel).'}';
+    "biayav":'.json_encode($bv).'}';
 } else {
     die('NO DATA PASSED');
 }

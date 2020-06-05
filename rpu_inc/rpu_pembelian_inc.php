@@ -32,7 +32,7 @@ $ongkir = ($beli['ongkir']==0) ? '' : money_simple($beli['ongkir']);
                 <div class="row">
                     <div class="col-3">
                     <div class="input-group">
-                    <input type="text" class="form-control" name="cari-po" id="cari-po" data-inputmask-inputformat="PO-YYYYMMDD-UUUU" placeholder="PO-YYYYMMDD-UUUU" data-mask>
+                    <input type="text" class="form-control" name="cari-po" id="cari-po">
                     <div class="input-group-append">
                     <button type="btn" id="btn-cari-po" class="btn btn-primary"><i class="fas fa-search"></i></button>
                     </div>
@@ -372,9 +372,9 @@ $(function(){
 
     set_date($('.tanggal-po'))
 
-    $('#cari-po').inputmask({
-        "mask":"PO-99999999-9999"
-    })
+    // $('#cari-po').inputmask({
+// "mask":"PO-99999999-9999"
+// })
 
     $('#cari-po').keyup(function(e){
         e.preventDefault()
