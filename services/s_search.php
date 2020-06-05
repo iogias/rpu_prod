@@ -93,10 +93,10 @@ if (isset($_POST['token']) && $_POST['token']=='supplier'){
     }
     echo $data;
 } else if (isset($_POST['token']) && $_POST['token']=='cek_exist'){
-    $key = trim($_POST['query']);
+    $key = strtoupper($_POST['query']);
     $table = "tb_".$_POST['table'];
     $row=RpuKatalog::getNameOnTable($table,$key);
-    if($row){
+    if($row['nama']){
         echo '{"status":true}';
     } else {
         echo '{"status":false}';
