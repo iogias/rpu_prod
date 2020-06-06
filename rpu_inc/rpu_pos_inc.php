@@ -534,7 +534,7 @@ $(function() {
   $('#tambah-inv').click(function(e) {
     e.preventDefault()
     let nomr = $('#text-nomorinv').text()
-    if (nomr == '') {
+    //if (nomr == '') {
       enable_form()
       enable_btn($('#tambah-detail-inv'))
       disable_btn($(this))
@@ -549,9 +549,9 @@ $(function() {
           //nomorp = data.nomor
         }
       }, 'json')
-    } else {
-      toastr.info('NOMOR INVOICE SUDAH TERISI, MOHON DIBATALKAN DAHULU!')
-    }
+    //} else {
+    //  toastr.info('NOMOR INVOICE SUDAH TERISI, MOHON DIBATALKAN DAHULU!')
+    //}
   })
 
   $('#tambah-detail-inv').click(function(e) {
