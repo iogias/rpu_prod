@@ -128,7 +128,7 @@ $kg=RpuKatalog::getAllKategoriProduk();
                       <div class="input-group-prepend">
                         <span class="input-group-text">Rp</span>
                       </div>
-                      <input type="text" class="form-control text-right" name="harga-beli" id="harga-beli" readonly />
+                      <input type="text" class="form-control text-right harga-produk" name="harga-beli" id="harga-beli" />
                     </div>
                   </div>
                   <div class="form-group row">

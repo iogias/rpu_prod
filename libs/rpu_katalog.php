@@ -122,7 +122,7 @@ class RpuKatalog {
 
     public static function getAllProdukJoin($arg='99',$arg2='00'){
         $sql = "SELECT pr.id,pr.kode_produk,pr.nama,pr.nama_jual,qbeli.beli AS qty_beli,COALESCE(qjual.jual,0) AS qty_jual,
-                qbeli.harga_beli,pr.harga_jual,pr.hpp,pr.lainnya,kg.nama AS kategori,pr.status,qbeli.nomor_po,
+                pr.harga_beli,pr.harga_jual,pr.hpp,pr.lainnya,kg.nama AS kategori,pr.status,qbeli.nomor_po,
                 (qbeli.beli-COALESCE(qjual.jual,0)-COALESCE(pr.lainnya,0)) AS stok_ready
                 FROM
                 (SELECT SUM(b.produk_qty) AS beli,b.kode_produk,b.harga_beli,b.nomor_po FROM tb_pembelian_detail b GROUP BY b.kode_produk) AS qbeli
@@ -155,7 +155,7 @@ class RpuKatalog {
     }
 
     public static function getAllProdukJoinById($id){
-        $sql = "SELECT p.id,p.kode_produk,p.nama,p.nama_jual,d.harga_beli,p.hpp,p.kategoriproduk_id,
+        $sql = "SELECT p.id,p.kode_produk,p.nama,p.nama_jual,p.harga_beli,p.hpp,p.kategoriproduk_id,
                 p.harga_jual,p.lainnya,p.status,s.nama AS supplier,k.nama AS kategori\n";
         $sql .= "FROM tb_produk p JOIN tb_pembelian_detail d ON d.kode_produk=p.kode_produk\n";
         $sql .= "LEFT JOIN tb_kategori_produk k ON k.id=p.kategoriproduk_id\n";
@@ -449,12 +449,14 @@ class RpuKatalog {
     public static function update_produk($data) {
         $nama = strtoupper($data['nama-jual']);
         $harga = to_int_koma($data['harga-jual']);
+        $harga_beli = to_int_koma($data['harga-beli']);
         $hpp = to_int_koma($data['hpp']);
         $tambah = ($data['stok-lain-tambah']=='')?0:$data['stok-lain-tambah'];
         $row = self::cek_stok_produk($data['kode']);
         $lainnya = $row['lainnya']+$tambah;
         $sql = "UPDATE tb_produk
                 SET nama_jual='".$nama."',
+                harga_beli ='".$harga_beli."',
                 harga_jual ='".$harga."',
                 hpp ='".$hpp."',
                 stok_ready ='".$data['stok-ready']."',
@@ -469,6 +471,7 @@ class RpuKatalog {
                     'stok_ready' =>$data['stok-ready'],
                     'terjual' =>$data['stok-terjual'],
                     'lainnya' =>$lainnya,
+                    'harga_beli'=>$harga_beli,
                     'harga_jual'=>$harga,
                     'hpp'=>$hpp,
                     'kategoriproduk_id'=>$data['kategoriproduk-id'],

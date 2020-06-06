@@ -32,7 +32,7 @@ $ongkir = ($beli['ongkir']==0) ? '' : money_simple($beli['ongkir']);
               <div class="row">
                 <div class="col-3">
                   <div class="input-group">
-                    <input type="text" class="form-control" name="cari-po" id="cari-po">
+                    <input type="text" class="form-control" name="cari-po" id="cari-po" data-inputmask-inputformat="PO-YYYYMMDD-UUUU" placeholder="PO-YYYYMMDD-UUUU" data-mask>
                     <div class="input-group-append">
                       <button type="btn" id="btn-cari-po" class="btn btn-primary"><i class="fas fa-search"></i></button>
                     </div>
@@ -397,9 +397,9 @@ $(function() {
 
   set_date($('.tanggal-po'))
 
-  // $('#cari-po').inputmask({
-  // "mask":"PO-99999999-9999"
-  // })
+  $('#cari-po').inputmask({
+    "mask": "PO-99999999-9999"
+  })
 
   $('#cari-po').keyup(function(e) {
     e.preventDefault()
@@ -475,24 +475,24 @@ $(function() {
     }
   })
 
- // $('#nama-staff').blur(function(e) {
-// e.preventDefault()
-// //let id = $(this).attr('id').replace('nama-','')
-// let query = $(this).val()
-// if (query != '') {
-// $.post(service_url + 's_search.php', {
-// token: 'cek_exist',
-// table: 'staff',
-// query: query
-// },
-// function(data) {
-// // $('#list-'+id).html(data)
-// if (data.status == false) {
-// toastr.error('NAMA STAFF BELUM TERDAFTAR, HARAP DIDAFTAR DAHULU')
-// }
-// }, 'json')
-// }
-// })
+  // $('#nama-staff').blur(function(e) {
+  // e.preventDefault()
+  // //let id = $(this).attr('id').replace('nama-','')
+  // let query = $(this).val()
+  // if (query != '') {
+  // $.post(service_url + 's_search.php', {
+  // token: 'cek_exist',
+  // table: 'staff',
+  // query: query
+  // },
+  // function(data) {
+  // // $('#list-'+id).html(data)
+  // if (data.status == false) {
+  // toastr.error('NAMA STAFF BELUM TERDAFTAR, HARAP DIDAFTAR DAHULU')
+  // }
+  // }, 'json')
+  // }
+  // })
 
   $(document).on('click', '.gsearch', function(e) {
     e.preventDefault()
@@ -540,25 +540,26 @@ $(function() {
   $('#tambah-po').click(function(e) {
     e.preventDefault()
     let nomr = $('#text-nomorpo').text()
+    console.log(nomr)
     // if (nomr == '') {
-      enable_form()
-      enable_btn($('#tambah-detail-po'))
-      enable_btn($('#tambah-produk'))
-      disable_btn($(this))
-      $.post(service_url + 's_pembelian.php', {
-        token: param
-      }, function(data) {
-        if (data.status == true) {
-          $('#nomor-po').val(data.nomor)
-          $('#text-nomorpo').text(data.nomor)
-          $('#no-urut').val(data.nourut)
-          $('#nama-supplier').focus()
-          //nomorp = data.nomor
-        }
-      }, 'json')
-   // } else {
-// toastr.info('NOMOR PO SUDAH TERISI, MOHON DIBATALKAN DAHULU!')
-// }
+    enable_form()
+    enable_btn($('#tambah-detail-po'))
+    enable_btn($('#tambah-produk'))
+    disable_btn($(this))
+    $.post(service_url + 's_pembelian.php', {
+      token: param
+    }, function(data) {
+      if (data.status == true) {
+        $('#nomor-po').val(data.nomor)
+        $('#text-nomorpo').text(data.nomor)
+        $('#no-urut').val(data.nourut)
+        $('#nama-supplier').focus()
+        //nomorp = data.nomor
+      }
+    }, 'json')
+    // } else {
+    // toastr.info('NOMOR PO SUDAH TERISI, MOHON DIBATALKAN DAHULU!')
+    // }
   })
 
   $('#tambah-detail-po').click(function(e) {
@@ -632,11 +633,11 @@ $(function() {
     $('#td-nama-produk-' + idrx).val(nama)
     $('#td-kode-produk-' + idrx).val(kode)
     $('#td-hargaprodukpo-' + idrx).val(harga)
-   // if (id[3]) {
-// $('#td-hargaprodukpo-' + idrx).removeAttr('readonly')
-// } else if (id[3] != '0') {
-// $('#td-hargaprodukpo-' + idrx).attr('readonly', 'readonly')
-// }
+    // if (id[3]) {
+    // $('#td-hargaprodukpo-' + idrx).removeAttr('readonly')
+    // } else if (id[3] != '0') {
+    // $('#td-hargaprodukpo-' + idrx).attr('readonly', 'readonly')
+    // }
     $('#list-produk-nama-' + idrx).css('display', 'none')
   })
 

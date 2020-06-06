@@ -39,4 +39,3 @@ require_once 'rpu_tools.php';
 require_once 'rpu_pembelian.php';
 require_once 'rpu_penjualan.php';
 require_once 'rpu_user.php';
-
