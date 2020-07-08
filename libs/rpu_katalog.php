@@ -77,11 +77,15 @@ class RpuKatalog {
     }
 
     public static function getNamaJual($nama,$cek){
-        $sql = "SELECT p.id,p.nama_jual,p.kode_produk,p.harga_jual,p.stok_ready,p.terjual,p.lainnya FROM tb_produk p
-                WHERE p.nama_jual LIKE '%$nama%' AND p.nama_jual!='' AND p.status=1\n";
+        $sql = "SELECT p.id,p.nama_jual,p.kode_produk,p.harga_jual,
+        p.stok_ready,p.terjual,p.lainnya
+
+        FROM tb_produk p
+        WHERE p.nama_jual LIKE '%$nama%' AND p.nama_jual!='' AND p.status=1\n";
         if($cek!=NULL){//if(count($cek)!=0){
             $sql .="AND p.kode_produk NOT IN ('".implode("','",$cek)."')";
         }
+
         $params = array('nama_jual'=>$nama);
         return DbHandler::getAll($sql,$params);
     }

@@ -58,7 +58,7 @@ if (!defined('WEB_ROOT')) {
             <th>Total</th>
             <th>Piutang</th>
             <th>Keterangan</th>
-            <th width="8%">&nbsp;</th>
+            <th width="12%">&nbsp;</th>
         </tr>
     </thead>
     <tbody></tbody>
@@ -218,7 +218,13 @@ $(function(){
         fetch_lap_jual(awal,akhir,lunas)
         fetch_total_inv(awal,akhir)
     })
-
+    $(document).on('click','.btn-print-inv-lap',function(e){
+        e.preventDefault()
+        let idv = $(this).attr('id')
+        if(idv!=''){
+            window.open('print/print_inv.php?nomorinv=' +idv, '_blank')
+        }
+    })
     $(document).on('click','.btn-bayar-inv',function(e){
         e.preventDefault()
         let id = $(this).attr('id')

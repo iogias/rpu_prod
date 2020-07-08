@@ -177,6 +177,7 @@ function lunasButton(lunas,po,total){
     let dis = (lunas=='Lunas')?'disabled':'enabled';
     let btncontrol = '<button type="button" data-total="'+total+'" data-toggle="modal" data-target="#modal-bayar" class="btn btn-primary btn-sm btn-bayar" id="'+po+'" '+dis+'>'+
             'Bayar</button>'
+        btncontrol +='<button type="button" class="btn-print-po-lap btn btn-success btn-sm ml-2" id="'+po+'">Print</button>'
     return btncontrol
 }
 
@@ -185,6 +186,7 @@ function lunasButtonInv(lunas,inv,total){
     let dis = (lunas=='Lunas')?'disabled':'enabled';
     let btncontrol = '<button type="button" data-total-inv="'+total+'" data-toggle="modal" data-target="#modal-bayar-inv" class="btn btn-primary btn-sm btn-bayar-inv" id="'+inv+'" '+dis+'>'+
             'Bayar</button>'
+        btncontrol +='<button type="button" class="btn-print-inv-lap btn btn-success btn-sm ml-2" id="'+inv+'">Print</button>'
     return btncontrol
 }
 

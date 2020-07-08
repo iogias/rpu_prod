@@ -58,7 +58,7 @@ if (!defined('WEB_ROOT')) {
             <th class="text-center">Total</th>
             <th class="text-center">Hutang</th>
             <th class="text-center">Keterangan</th>
-            <th width="8%">&nbsp;</th>
+            <th width="12%">&nbsp;</th>
         </tr>
         </thead>
         <tbody></tbody>
@@ -215,6 +215,14 @@ $(function(){
         $('#tb-lap-pembelian').DataTable().destroy()
         fetch_lap_beli(awal,akhir,lunas)
         fetch_total(awal,akhir)
+    })
+
+    $(document).on('click','.btn-print-po-lap',function(e){
+        e.preventDefault()
+        let pv = $(this).attr('id')
+        if(pv!=''){
+            window.open('print/print_po.php?nomorpo=' +pv, '_blank')
+        }
     })
 
     $(document).on('click','.btn-bayar',function(e){
