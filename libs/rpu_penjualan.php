@@ -4,7 +4,7 @@ if (!defined('WEB_ROOT')) {
 }
 class RpuPenjualan{
     private static function no_urut($tgl){
-        $sql = "SELECT COUNT(no_urut) FROM tb_penjualan
+        $sql = "SELECT MAX(no_urut) FROM tb_penjualan
                 WHERE tanggal_pembuatan='".$tgl."'";
         $param = array('tanggal_pembuatan'=>$tgl);
         return DbHandler::getOne($sql, $param);
